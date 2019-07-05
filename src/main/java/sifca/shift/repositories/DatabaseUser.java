@@ -23,14 +23,14 @@ public class DatabaseUser implements UserRepository {
 
     @PostConstruct
     public void initialize(){
-        String createUserTableSql = "create table USERS (" +
+        String createUserTableSql = "create table if not exists USERS (" +
                 "PHONE  VARCHAR(11)," +
                 "NAME     VARCHAR(20)," +
                 "IMAGE   VARCHAR(50)," +
                 ");";
 
         jdbcTemplate.update(createUserTableSql, new MapSqlParameterSource());
-        create("89515769680", "Tester", "https://pp.userapi.com/");
+        //create("89515769680", "Tester", "https://pp.userapi.com/");
     }
 
     @Override
