@@ -1,5 +1,6 @@
 package sifca.shift.repositories;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import sifca.shift.exception.NotFoundException;
 import sifca.shift.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import java.util.List;
  * Реализиция, хранящая все данные в памяти приложения
  */
 @Repository
+@ConditionalOnProperty(name = "use.database", havingValue = "false")
 public class UserQueries implements UserRepository{
 
     private Integer count = -1;

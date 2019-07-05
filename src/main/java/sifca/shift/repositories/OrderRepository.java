@@ -4,7 +4,7 @@ import sifca.shift.models.Order;
 
 import java.util.Date;
 import java.util.List;
-
+/*
 public interface OrderRepository {
 
     Order getOne(Integer ID);
@@ -18,4 +18,4 @@ public interface OrderRepository {
                  String Note);
 
     List<Order> getAll();
-}
+}*/

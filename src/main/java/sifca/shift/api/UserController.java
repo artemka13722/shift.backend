@@ -20,14 +20,14 @@ public class UserController {
 
     @GetMapping(USER_PATH + "/getAll")
     @ApiOperation(value = "Получение всех пользователей")
-    public ResponseEntity<List<User>> getAll(){
+    public ResponseEntity<List<User>> getAll() {
         List<User> users = UserService.getAll();
         return ResponseEntity.ok(users);
     }
 
     @GetMapping(USER_PATH + "/get")
     @ApiOperation(value = "Получение информации о пользователе по номеру телефона")
-    public User getOne(@RequestParam(value = "phone", required = true) String phone){
+    public User getOne(@RequestParam(value = "phone", required = true) String phone) {
         return UserService.getOne(phone);
     }
 
@@ -35,7 +35,7 @@ public class UserController {
     @ApiOperation(value = "Добавление нового пользователя")
     public ResponseEntity<User> create(
             @ApiParam(value = "Данные для нового пользователя (Номер телефона, имя, URL-адрес картинки)")
-            @RequestBody User user){
+            @RequestBody User user) {
         User result = UserService.create(user.phone, user.name, user.image);
         return ResponseEntity.ok(result);
     }
