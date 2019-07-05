@@ -1,7 +1,6 @@
-package sifca.shift.models;
+package ftc.shift.sample.models;
 
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiOperation;
 
 public class Courier {
     @ApiModelProperty(value = "ID взятого заказа")
@@ -18,7 +17,7 @@ public class Courier {
     public Courier(Integer ID, String CourierPhone, char Status){
         this.ID = ID;
         this.CourierPhone = CourierPhone;
-        this.Status = Status;
+        this.Status = 'P';
     }
 
     public Integer getID() { return ID; }

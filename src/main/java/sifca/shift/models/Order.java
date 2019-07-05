@@ -1,14 +1,15 @@
-package sifca.shift.models;
+package ftc.shift.sample.models;
 
 import io.swagger.annotations.ApiModelProperty;
-import org.apache.tomcat.jni.Time;
 
 import java.util.Date;
-import java.util.List;
 
 public class Order {
     @ApiModelProperty(value = "Уникальный идентификатор заказа", required = true)
     private Integer id;
+
+    @ApiModelProperty(value = "Номер телефона заказчика")
+    private String orderPhone;
 
     @ApiModelProperty(value = "Адрес места, где находится вещь", required = true)
     private String fromAddress;
@@ -29,20 +30,26 @@ public class Order {
     private char status;
 
     @ApiModelProperty(value = "Примечание", required = true)
-    public String note;
+    private String note;
+
+    @ApiModelProperty(value = "Размер вещи, которую нужно забрать", required = true)
+    private String size;
 
     public Order() {
     }
 
-    public Order(Integer id, String fromAddress, String toAddress, Integer price, Date orderTime,
-                 Date deliveryTime, char status) {
-        this.id = id;
+    public Order(Integer Id, String orderPhone, String fromAddress, String toAddress, Integer price, Date orderTime,
+                 Date deliveryTime, char status, String note, String size) {
+        this.id = Id;
+        this.orderPhone = orderPhone;
         this.fromAddress = fromAddress;
         this.toAddress = toAddress;
         this.price = price;
         this.orderTime = orderTime;
         this.deliveryTime = deliveryTime;
-        this.status = status;
+        this.status = 'P';
+        this.note = note;
+        this.size = size;
     }
 
     public Integer getId() {
@@ -52,6 +59,10 @@ public class Order {
     public void setId(Integer id) {
         this.id = id;
     }
+
+    public String getOrderPhone() { return orderPhone; }
+
+    public void setOrderPhone(String orderPhone) { this.orderPhone = orderPhone; }
 
     public String getFromAddress() {
         return fromAddress;
@@ -108,4 +119,8 @@ public class Order {
     public void setNote(String note) {
         this.note = note;
     }
+
+    public String getSize() {return size; }
+
+    public void setSize(String size) { this.size = size; }
 }

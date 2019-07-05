@@ -1,4 +1,4 @@
-package sifca.shift;
+package ftc.shift.sample;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;

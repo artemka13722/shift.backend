@@ -1,4 +1,4 @@
-package sifca.shift.models;
+package ftc.shift.sample.models;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -9,15 +9,11 @@ public class User {
     @ApiModelProperty(value = "Имя пользователя", required = true)
     public String name;
 
-    @ApiModelProperty(value = "Название изображения", required = true)
-    public String image;
-
     public User(){
     }
-    public User(String phone, String name, String image) {
+    public User(String phone, String name) {
         this.name = name;
         this.phone = phone;
-        this.image = image;
     }
 
     public String getName() {
@@ -34,13 +30,5 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 }

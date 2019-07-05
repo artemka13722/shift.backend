@@ -1,7 +1,7 @@
-package sifca.shift.services;
+package ftc.shift.sample.services;
 
-import sifca.shift.models.User;
-import sifca.shift.repositories.UserRepository;
+import ftc.shift.sample.models.User;
+import ftc.shift.sample.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +21,9 @@ public class UserService {
 
     public User getOne(String phone) { return userRepository.getOne(phone); }
 
-    public User update(String oldPhone, String phone, String name, String image)  { return  userRepository.update(oldPhone, phone, name, image); }
+    public User update(String oldPhone, String phone, String name)  { return  userRepository.update(oldPhone, phone, name); }
 
     public void delete(String phone){ userRepository.delete(phone);}
 
-    public User create(String phone, String name, String image){ return userRepository.create(phone, name, image); }
+    public User create(String phone, String name){ return userRepository.create(phone, name); }
 }
