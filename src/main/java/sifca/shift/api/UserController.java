@@ -1,7 +1,7 @@
-package ftc.shift.sample.api;
+package sifca.shift.api;
 
-import ftc.shift.sample.models.User;
-import ftc.shift.sample.services.UserService;
+import sifca.shift.models.User;
+import sifca.shift.services.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

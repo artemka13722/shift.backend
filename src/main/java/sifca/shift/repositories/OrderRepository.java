@@ -1,6 +1,6 @@
-package ftc.shift.sample.repositories;
+package sifca.shift.repositories;
 
-import ftc.shift.sample.models.Order;
+import sifca.shift.models.Order;
 
 import java.util.Date;
 import java.util.List;

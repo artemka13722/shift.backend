@@ -1,7 +1,7 @@
-package ftc.shift.sample.repositories;
+package sifca.shift.repositories;
 
-import ftc.shift.sample.exception.NotFoundException;
-import ftc.shift.sample.models.User;
+import sifca.shift.exception.NotFoundException;
+import sifca.shift.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

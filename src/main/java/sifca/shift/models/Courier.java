@@ -1,4 +1,4 @@
-package ftc.shift.sample.models;
+package sifca.shift.models;
 
 import io.swagger.annotations.ApiModelProperty;
 

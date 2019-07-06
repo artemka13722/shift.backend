@@ -1,7 +1,7 @@
-package ftc.shift.sample.services;
+package sifca.shift.services;
 
-import ftc.shift.sample.models.User;
-import ftc.shift.sample.repositories.UserRepository;
+import sifca.shift.models.User;
+import sifca.shift.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

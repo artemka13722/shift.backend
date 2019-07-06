@@ -1,9 +1,9 @@
-package ftc.shift.sample.repositories;
-import ftc.shift.sample.exception.NotFoundException;
-import ftc.shift.sample.models.Courier;
-import ftc.shift.sample.models.GetActiveOrders;
-import ftc.shift.sample.models.Order;
-import ftc.shift.sample.models.GetMyOrders;
+package sifca.shift.repositories;
+import sifca.shift.exception.NotFoundException;
+import sifca.shift.models.Courier;
+import sifca.shift.models.GetActiveOrders;
+import sifca.shift.models.Order;
+import sifca.shift.models.GetMyOrders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

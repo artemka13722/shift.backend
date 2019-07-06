@@ -1,4 +1,4 @@
-package ftc.shift.sample.exception;
+package sifca.shift.exception;
 
 import org.springframework.http.HttpStatus;
         import org.springframework.web.bind.annotation.ResponseStatus;

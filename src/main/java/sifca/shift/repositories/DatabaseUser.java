@@ -50,20 +50,18 @@ public class DatabaseUser implements UserRepository {
 
 
     @Override
-    public User update(String oldPhone, String phone, String name, String image) {
+    public User update(String oldPhone, String phone, String name) {
 
-        String sqlUpdate = "UPDATE users set name=:name , phone=:phone, image=:image where phone=:oldPhone";
+        String sqlUpdate = "UPDATE users set name=:name , phone=:phone where phone=:oldPhone";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("phone", phone)
                 .addValue("oldPhone", oldPhone)
-                .addValue("name", name)
-                .addValue("image", image);
+                .addValue("name", name);
 
         jdbcTemplate.update(sqlUpdate, params);
         User user = new User();
         user.setName(name);
-        user.setImage(image);
         user.setPhone(phone);
         return user;
     }
@@ -78,17 +76,15 @@ public class DatabaseUser implements UserRepository {
     }
 
     @Override
-    public User create(String phone, String name, String image) {
-        String createUserSql = "insert into Users (Phone, Name, Image) values (:phone, :name, :image)";
+    public User create(String phone, String name) {
+        String createUserSql = "insert into Users (Phone, Name) values (:phone, :name)";
 
         User user = new User();
         user.setName(name);
-        user.setImage(image);
         user.setPhone(phone);
 
         MapSqlParameterSource userParams = new MapSqlParameterSource()
                 .addValue("name", user.getName())
-                .addValue("image", user.getImage())
                 .addValue("phone", user.getPhone());
 
         jdbcTemplate.update(createUserSql, userParams);

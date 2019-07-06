@@ -30,7 +30,6 @@ public class UserExtractor implements ResultSetExtractor<List<User>> {
 
                 user.setName(rs.getString("name"));
                 user.setPhone(rs.getString("phone"));
-                user.setImage(rs.getString("image"));
 
                 users.put(phone, user);
             }

@@ -1,6 +1,6 @@
-package ftc.shift.sample.repositories;
+package sifca.shift.repositories;
 
-import ftc.shift.sample.models.User;
+import sifca.shift.models.User;
 
 import java.util.List;
 

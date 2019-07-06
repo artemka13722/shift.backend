@@ -1,13 +1,13 @@
-package ftc.shift.sample.api;
+package sifca.shift.api;
 
 
-import ftc.shift.sample.exception.NotFoundException;
-import ftc.shift.sample.models.Courier;
-import ftc.shift.sample.models.GetActiveOrders;
-import ftc.shift.sample.models.GetMyOrders;
-import ftc.shift.sample.models.Order;
-import ftc.shift.sample.repositories.FullOrder;
-import ftc.shift.sample.services.OrderService;
+import sifca.shift.exception.NotFoundException;
+import sifca.shift.models.Courier;
+import sifca.shift.models.GetActiveOrders;
+import sifca.shift.models.GetMyOrders;
+import sifca.shift.models.Order;
+import sifca.shift.repositories.FullOrder;
+import sifca.shift.services.OrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
