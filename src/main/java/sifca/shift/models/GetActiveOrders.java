@@ -4,9 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 
-public class Order {
-    @ApiModelProperty(value = "Уникальный идентификатор заказа", required = true)
-    private Integer id;
+public class GetActiveOrders {
 
     @ApiModelProperty(value = "Номер телефона заказчика")
     private String orderPhone;
@@ -26,40 +24,26 @@ public class Order {
     @ApiModelProperty(value = "Время и дата доставки заказа", required = true)
     private Date deliveryTime;
 
-    @ApiModelProperty(value = "Время и дата доставки заказа", required = true)
-    private char status;
-
     @ApiModelProperty(value = "Примечание", required = true)
     private String note;
 
     @ApiModelProperty(value = "Размер вещи, которую нужно забрать", required = true)
     private String size;
 
-    public Order() {
+    public GetActiveOrders() {
     }
 
-    public Order(Integer Id, String orderPhone, String fromAddress, String toAddress, Integer price, Date orderTime,
-                 Date deliveryTime, char status, String note, String size) {
-        this.id = Id;
+    public GetActiveOrders(String orderPhone, String fromAddress, String toAddress, Integer price, Date orderTime,
+                 Date deliveryTime,String note, String size) {
         this.orderPhone = orderPhone;
         this.fromAddress = fromAddress;
         this.toAddress = toAddress;
         this.price = price;
         this.orderTime = orderTime;
         this.deliveryTime = deliveryTime;
-        this.status = status;
         this.note = note;
         this.size = size;
     }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public String getOrderPhone() { return orderPhone; }
 
     public void setOrderPhone(String orderPhone) { this.orderPhone = orderPhone; }
@@ -102,14 +86,6 @@ public class Order {
 
     public void setDeliveryTime(Date deliveryTime) {
         this.deliveryTime = deliveryTime;
-    }
-
-    public char getStatus() {
-        return status;
-    }
-
-    public void setStatus(char status) {
-        this.status = status;
     }
 
     public String getNote() {

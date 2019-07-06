@@ -17,7 +17,7 @@ public class Courier {
     public Courier(Integer ID, String CourierPhone, char Status){
         this.ID = ID;
         this.CourierPhone = CourierPhone;
-        this.Status = 'P';
+        this.Status = Status;
     }
 
     public Integer getID() { return ID; }

@@ -27,7 +27,7 @@ public class OrderQueries implements OrderRepository{
             date2 = sdf.parse(stringDate2);
         }catch(Exception e){
         }
-        Orders.add(++count, new Order(count, "89130000000", "from", "to", 200, date1, date2, 'A', "lala", "small"));
+        Orders.add(++count, new Order(count, "89130000000", "from", "to", 200, date1, date2, 'P', "lala", "small"));
         Orders.add(++count, new Order(count, "89131111111", "from", "to", 300, date1, date2, 'A', "lala", "small"));
     }
 
@@ -73,13 +73,11 @@ public class OrderQueries implements OrderRepository{
 
     @Override
     public boolean exists(Integer id){
-        System.out.println("\n\nSTARTING EXISTS\n\n");
-        for (Order order : Orders){
-            if (order.getId().equals(id)){
+        for (Order order : Orders) {
+            if (order.getId().equals(id)) {
                 return true;
             }
         }
-        System.out.println("\n\nENDING EXISTS\n\n");
         return false;
     }
 
