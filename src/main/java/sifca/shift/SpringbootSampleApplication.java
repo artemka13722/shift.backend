@@ -1,4 +1,4 @@
-package sifca.shift;
+package ftc.shift.sample;
 
 
 import org.springframework.boot.SpringApplication;

@@ -1,6 +1,7 @@
-package sifca.shift.api;
+package ftc.shift.sample.api;
 
-import sifca.shift.models.User;
+import ftc.shift.sample.models.User;
+import ftc.shift.sample.services.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -16,18 +17,18 @@ public class UserController {
     private static final String USER_PATH = "api/v001/user";
 
     @Autowired
-    private sifca.shift.services.UserService UserService;
+    private UserService UserService;
 
     @GetMapping(USER_PATH + "/getAll")
     @ApiOperation(value = "Получение всех пользователей")
-    public ResponseEntity<List<User>> getAll() {
+    public ResponseEntity<List<User>> getAll(){
         List<User> users = UserService.getAll();
         return ResponseEntity.ok(users);
     }
 
     @GetMapping(USER_PATH + "/get")
     @ApiOperation(value = "Получение информации о пользователе по номеру телефона")
-    public User getOne(@RequestParam(value = "phone", required = true) String phone) {
+    public User getOne(@RequestParam(value = "phone", required = true) String phone){
         return UserService.getOne(phone);
     }
 
@@ -35,8 +36,8 @@ public class UserController {
     @ApiOperation(value = "Добавление нового пользователя")
     public ResponseEntity<User> create(
             @ApiParam(value = "Данные для нового пользователя (Номер телефона, имя, URL-адрес картинки)")
-            @RequestBody User user) {
-        User result = UserService.create(user.phone, user.name, user.image);
+            @RequestBody User user){
+        User result = UserService.create(user.phone, user.name);
         return ResponseEntity.ok(result);
     }
 
@@ -47,7 +48,7 @@ public class UserController {
             @RequestHeader("phone") String phone,
             @ApiParam(value = "Новые данные для пользователи (Номер телефона, имя, URL-адрес картинки)")
             @RequestBody User user) {
-        User updatedUser = UserService.update(phone, user.phone, user.name, user.image);
+        User updatedUser = UserService.update(phone, user.phone, user.name);
         return ResponseEntity.ok(updatedUser);
     }
 

@@ -1,6 +1,6 @@
-package sifca.shift.repositories;
+package ftc.shift.sample.repositories;
 
-import sifca.shift.models.User;
+import ftc.shift.sample.models.User;
 
 import java.util.List;
 
@@ -11,11 +11,11 @@ public interface UserRepository {
 
     User getOne(String phone);
 
-    User update(String oldPhone, String phone, String name, String image);
+    User update(String oldPhone, String phone, String name);
 
     void delete(String phone);
 
-    User create(String phone, String name, String image);
+    User create(String phone, String name);
 
     List<User> getAll();
 }

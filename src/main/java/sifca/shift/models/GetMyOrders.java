@@ -4,12 +4,10 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 
-public class Order {
-    @ApiModelProperty(value = "Уникальный идентификатор заказа", required = true)
-    private Integer id;
+public class GetMyOrders {
 
-    @ApiModelProperty(value = "Номер телефона заказчика")
-    private String orderPhone;
+    @ApiModelProperty(value = "Номер телефона заказчика/курьера", required = true)
+    private String Phone;
 
     @ApiModelProperty(value = "Адрес места, где находится вещь", required = true)
     private String fromAddress;
@@ -29,40 +27,44 @@ public class Order {
     @ApiModelProperty(value = "Время и дата доставки заказа", required = true)
     private char status;
 
+    @ApiModelProperty(value = "Код доступа", required = true)
+    private Integer access;
+
     @ApiModelProperty(value = "Примечание", required = true)
     private String note;
 
     @ApiModelProperty(value = "Размер вещи, которую нужно забрать", required = true)
     private String size;
 
-    public Order() {
+    public GetMyOrders() {
     }
 
-    public Order(Integer Id, String orderPhone, String fromAddress, String toAddress, Integer price, Date orderTime,
-                 Date deliveryTime, char status, String note, String size) {
-        this.id = Id;
-        this.orderPhone = orderPhone;
+    public GetMyOrders(String Phone, String fromAddress, String toAddress, Integer price, Date orderTime,
+                       Date deliveryTime, Integer access, String note, String size, char Status) {
+        this.Phone = Phone;
         this.fromAddress = fromAddress;
         this.toAddress = toAddress;
         this.price = price;
         this.orderTime = orderTime;
         this.deliveryTime = deliveryTime;
-        this.status = status;
+        this.access = access;
         this.note = note;
         this.size = size;
+        this.status = Status;
     }
 
-    public Integer getId() {
-        return id;
+
+    public char getStatus() {
+        return status;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setStatus(char Status) {
+        this.status = status;
     }
 
-    public String getOrderPhone() { return orderPhone; }
+    public String getOrderPhone() { return Phone; }
 
-    public void setOrderPhone(String orderPhone) { this.orderPhone = orderPhone; }
+    public void setOrderPhone(String Phone) { this.Phone = Phone; }
 
     public String getFromAddress() {
         return fromAddress;
@@ -104,12 +106,12 @@ public class Order {
         this.deliveryTime = deliveryTime;
     }
 
-    public char getStatus() {
-        return status;
+    public int getAccess() {
+        return access;
     }
 
-    public void setStatus(char status) {
-        this.status = status;
+    public void setAccess(int Status) {
+        this.access = access;
     }
 
     public String getNote() {
