@@ -1,7 +1,7 @@
 package sifca.shift.api;
 
 
-import sifca.shift.exception.NotFoundException;
+import sifca.shift.exception.modelsException.OrderException;
 import sifca.shift.models.Order;
 import sifca.shift.services.OrderService;
 import sifca.shift.models.Courier;
@@ -68,7 +68,7 @@ public class OrderController {
     ) {
         List<ActiveOrders> orders = orderAndCourier.getActiveOrders();
         if(orders.isEmpty())
-            throw new NotFoundException();
+            throw new OrderException();
         return ResponseEntity.ok(orders);
     }
 
@@ -97,7 +97,7 @@ public class OrderController {
             @ApiParam(value = "Данные для изменения статуса")
             @RequestBody Courier courier) {
         if (courier.getStatus() == 'C' && courier.getStatus() == 'D')
-            throw new NotFoundException();
+            throw new OrderException();
         orderAndCourier.changeStatus(courier.ID, courier.Status, courier.getCourierPhone());
         return ResponseEntity.ok().build();
     }

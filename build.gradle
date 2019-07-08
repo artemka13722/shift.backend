@@ -30,4 +30,6 @@ dependencies {
 
     compile("com.h2database:h2")
     compile("org.springframework:spring-jdbc")
+
+    compileOnly('org.projectlombok:lombok')
 }

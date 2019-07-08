@@ -1,7 +1,7 @@
 package sifca.shift.repositories;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import sifca.shift.exception.NotFoundException;
+import sifca.shift.exception.modelsException.AccesException;
 import sifca.shift.models.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -37,7 +37,7 @@ public class OrderInMemory implements OrderRepository{
     @Override
     public List<Order> getAll(){
         if(Orders.isEmpty()){
-            throw new NotFoundException();
+            throw new AccesException();
         }
         return Orders;
     }

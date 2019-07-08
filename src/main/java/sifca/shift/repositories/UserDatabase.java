@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import sifca.shift.exception.modelsException.NotFoundException;
 import sifca.shift.models.User;
 
 import javax.annotation.PostConstruct;
@@ -28,7 +29,7 @@ public class UserDatabase implements UserRepository {
                 ");";
 
         jdbcTemplate.update(createUserTableSql, new MapSqlParameterSource());
-       // create("89515769680", "Tester");
+        create("89515769680", "Tester");
     }
 
     @Override
@@ -41,7 +42,8 @@ public class UserDatabase implements UserRepository {
 
         List<User> users = jdbcTemplate.query(getUserSql, params, userExtractor);
         if (users.isEmpty()) {
-            return null;
+            throw new NotFoundException();
+            //throw new DatabaseException();
         }
         return users.get(0);
     }
@@ -87,7 +89,6 @@ public class UserDatabase implements UserRepository {
 
         jdbcTemplate.update(createUserSql, userParams);
         return user;
-
 
     }
 

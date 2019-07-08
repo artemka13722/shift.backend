@@ -1,6 +1,7 @@
 package sifca.shift.repositories;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import sifca.shift.exception.NotFoundException;
+import sifca.shift.exception.modelsException.AccesException;
+import sifca.shift.exception.modelsException.OrderException;
 import sifca.shift.models.ActiveOrders;
 import sifca.shift.models.Courier;
 import sifca.shift.models.MyOrders;
@@ -34,7 +35,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
             orderInMemory.changeStatus(OrderId, 'P');
         }
         else
-            throw new NotFoundException();
+            throw new OrderException();
     }
 
     @Override
@@ -47,7 +48,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
             }
             return false;
         }
-        throw new NotFoundException();
+        throw new OrderException();
     }
 
     @Override
@@ -57,7 +58,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
         }
         else
         {
-            throw new NotFoundException();
+            throw new OrderException();
         }
     }
 
@@ -72,7 +73,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
             else
                 return false;
         }
-        throw new NotFoundException();
+        throw new OrderException();
     }
 
     @Override
@@ -86,7 +87,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
             else
                 return false;
         }
-        throw new NotFoundException();
+        throw new OrderException();
     }
 
     @Override
@@ -104,7 +105,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
     public void changeStatus(Integer id, char Status, String phone) {
         if ((!isCustomer(id, phone) && !isCourier(id, phone)    // Если это не заказчик, и не курьер или
                 || (Status != 'C' && Status != 'D')))           // запрос не на отмену или закрытие заказа
-            throw new NotFoundException();                      // вернуть ошибку
+            throw new OrderException();                      // вернуть ошибку
         else {
             if (Status == 'C' && isCustomer(id, phone)) {       // Если запрос на отмену, и это заказчик
                 if (!CourierExists(id)) {                       // Если у заказа есть курьер
@@ -164,7 +165,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
                 }
             }
         }
-        throw new NotFoundException();
+        throw new AccesException();
     }
 
     @Override
@@ -184,7 +185,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
     @Override
     public List<Courier> getAll(){
         if(couriers.isEmpty()){
-            throw new NotFoundException();
+            throw new AccesException();
         }
         return couriers;
     }
@@ -197,6 +198,6 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
         if (isCourier(OrderId, phone)){
             return getCourier(OrderId).getStatus();
         }
-        throw new NotFoundException();
+        throw new AccesException();
     }
 }
