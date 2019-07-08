@@ -4,10 +4,10 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 
-public class GetActiveOrders {
+public class MyOrders {
 
-    @ApiModelProperty(value = "Номер телефона заказчика")
-    private String orderPhone;
+    @ApiModelProperty(value = "Номер телефона заказчика/курьера", required = true)
+    private String Phone;
 
     @ApiModelProperty(value = "Адрес места, где находится вещь", required = true)
     private String fromAddress;
@@ -24,29 +24,47 @@ public class GetActiveOrders {
     @ApiModelProperty(value = "Время и дата доставки заказа", required = true)
     private Date deliveryTime;
 
+    @ApiModelProperty(value = "Время и дата доставки заказа", required = true)
+    private char status;
+
+    @ApiModelProperty(value = "Код доступа", required = true)
+    private Integer access;
+
     @ApiModelProperty(value = "Примечание", required = true)
     private String note;
 
     @ApiModelProperty(value = "Размер вещи, которую нужно забрать", required = true)
     private String size;
 
-    public GetActiveOrders() {
+    public MyOrders() {
     }
 
-    public GetActiveOrders(String orderPhone, String fromAddress, String toAddress, Integer price, Date orderTime,
-                 Date deliveryTime,String note, String size) {
-        this.orderPhone = orderPhone;
+    public MyOrders(String Phone, String fromAddress, String toAddress, Integer price, Date orderTime,
+                    Date deliveryTime, Integer access, String note, String size, char Status) {
+        this.Phone = Phone;
         this.fromAddress = fromAddress;
         this.toAddress = toAddress;
         this.price = price;
         this.orderTime = orderTime;
         this.deliveryTime = deliveryTime;
+        this.access = access;
         this.note = note;
         this.size = size;
+        this.status = Status;
     }
-    public String getOrderPhone() { return orderPhone; }
 
-    public void setOrderPhone(String orderPhone) { this.orderPhone = orderPhone; }
+
+    public char getStatus() {
+        return status;
+    }
+
+    public void setStatus(char Status) {
+        this.status = status;
+    }
+
+    public String getPhone() { return Phone; }
+
+    public void setPhone(String Phone) { this.Phone = Phone; }
 
     public String getFromAddress() {
         return fromAddress;
@@ -86,6 +104,14 @@ public class GetActiveOrders {
 
     public void setDeliveryTime(Date deliveryTime) {
         this.deliveryTime = deliveryTime;
+    }
+
+    public int getAccess() {
+        return access;
+    }
+
+    public void setAccess(int Status) {
+        this.access = access;
     }
 
     public String getNote() {

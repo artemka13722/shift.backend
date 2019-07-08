@@ -1,5 +1,6 @@
 package sifca.shift.repositories;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import sifca.shift.exception.NotFoundException;
 import sifca.shift.models.Order;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +13,15 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public class OrderQueries implements OrderRepository{
+@ConditionalOnProperty(name = "use.database", havingValue = "false")
+public class OrderInMemory implements OrderRepository{
     private Integer count = -1;
     Date date1, date2;
     public  List<Order> Orders = new ArrayList<>();
     DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 
     @Autowired
-    public OrderQueries(){
+    public OrderInMemory(){
         try{
             String stringDate="01/12/1995 17:30:20";
             String stringDate2="01/12/1995 17:50:20";
@@ -31,6 +33,7 @@ public class OrderQueries implements OrderRepository{
         Orders.add(++count, new Order(count, "89131111111", "from", "to", 300, date1, date2, 'A', "lala", "small"));
     }
 
+    // HAVE
     @Override
     public List<Order> getAll(){
         if(Orders.isEmpty()){
@@ -39,8 +42,9 @@ public class OrderQueries implements OrderRepository{
         return Orders;
     }
 
+    // HAVE
     @Override
-    public Order create(Integer Id,
+    public void create(Integer Id,
                         String orderPhone,
                         String fromAddress,
                         String toAddress,
@@ -54,7 +58,6 @@ public class OrderQueries implements OrderRepository{
                 deliveryTime, status, note, size);
         order.setStatus('A');
         Orders.add(++count, order);
-        return  Orders.get(count);
     }
 
     @Override
@@ -62,6 +65,7 @@ public class OrderQueries implements OrderRepository{
         return count;
     }
 
+    @Override
     public Order getOrder(Integer OrderId){
         for (Order order : Orders){
             if (OrderId.equals(order.getId())){

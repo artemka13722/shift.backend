@@ -1,7 +1,6 @@
 package sifca.shift.api;
 
 import sifca.shift.models.User;
-import sifca.shift.services.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -17,7 +16,7 @@ public class UserController {
     private static final String USER_PATH = "api/v001/user";
 
     @Autowired
-    private UserService UserService;
+    private sifca.shift.services.UserService UserService;
 
     @GetMapping(USER_PATH + "/getAll")
     @ApiOperation(value = "Получение всех пользователей")

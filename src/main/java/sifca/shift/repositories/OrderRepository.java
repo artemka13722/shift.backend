@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface OrderRepository {
 
-    Order create(Integer Id,
+    void create(Integer Id,
                  String orderPhone,
                  String fromAddress,
                  String toAddress,
@@ -21,9 +21,11 @@ public interface OrderRepository {
 
     List<Order> getAll();
 
-    Integer getIdOfLast();
+    Order getOrder(Integer OrderId);
 
     boolean exists(Integer id);
 
     void changeStatus(Integer id, char Status);
+
+    Integer getIdOfLast();
 }

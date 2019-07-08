@@ -1,7 +1,7 @@
 package sifca.shift.services;
 
-import sifca.shift.models.Order;
 import sifca.shift.repositories.OrderRepository;
+import sifca.shift.models.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class OrderService {
 
     public List<Order> getAll() { return orderRepository.getAll(); }
 
-    public Order create(Integer Id,
+    public void create(Integer Id,
                         String fromAddress,
                         String phone,
                         String toAddress,
@@ -28,11 +28,15 @@ public class OrderService {
                         char status,
                         String note,
                         String size) {
-        return orderRepository.create(Id, phone, fromAddress, toAddress, price, orderTime,
+        orderRepository.create(Id, phone, fromAddress, toAddress, price, orderTime,
                 deliveryTime, status, note, size);
     }
 
-    public Integer getIdofLast() { return orderRepository.getIdOfLast(); }
+    public Order getOrder(Integer OrderId) { return orderRepository.getOrder(OrderId); }
 
     public void changeStatus(Integer Id, char Status) { orderRepository.changeStatus(Id, Status);}
+
+    public Integer getIdOfLast() { return orderRepository.getIdOfLast(); }
+
+    public boolean exists(Integer Id) { return  orderRepository.exists(Id);}
 }

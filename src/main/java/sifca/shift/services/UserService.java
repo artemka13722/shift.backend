@@ -1,7 +1,7 @@
 package sifca.shift.services;
 
-import sifca.shift.models.User;
 import sifca.shift.repositories.UserRepository;
+import sifca.shift.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

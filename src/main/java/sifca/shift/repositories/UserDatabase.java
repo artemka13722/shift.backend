@@ -4,16 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import sifca.shift.models.User;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.List;
 
 @Repository
 @ConditionalOnProperty(name = "use.database", havingValue = "true")
-public class DatabaseUser implements UserRepository {
+public class UserDatabase implements UserRepository {
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
@@ -24,19 +23,18 @@ public class DatabaseUser implements UserRepository {
     @PostConstruct
     public void initialize(){
         String createUserTableSql = "create table if not exists USERS (" +
-                "PHONE  VARCHAR(11)," +
-                "NAME     VARCHAR(20)," +
-                "IMAGE   VARCHAR(50)," +
+                "phone  VARCHAR(11)," +
+                "name   VARCHAR(20)," +
                 ");";
 
         jdbcTemplate.update(createUserTableSql, new MapSqlParameterSource());
-        //create("89515769680", "Tester", "https://pp.userapi.com/");
+       // create("89515769680", "Tester");
     }
 
     @Override
     // http://localhost:8081/api/v001/user/get?phone=89515769680
     public User getOne(String phone) {
-        String getUserSql = "select Phone, Name, Image from users where phone=:phone";
+        String getUserSql = "SELECT phone, name from users where phone=:phone";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("phone", phone);
@@ -94,7 +92,6 @@ public class DatabaseUser implements UserRepository {
     }
 
     @Override
-
     public List<User> getAll() {
 
         String sqlAll = "select * from users";
