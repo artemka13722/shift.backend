@@ -24,11 +24,11 @@ public class OrderController {
     private OrderService orderService;
 
     @Autowired
-    private OrderAndCourierService orderAndCourier;
+    private OrderAndCourierService orderAndCourierService;
     private static final String _PATH = "api/v001/";
 
 
-    @PostMapping(_PATH + "add/Order")
+    @PostMapping(_PATH + "add/order")
     @ApiOperation(value = "Оформление заказа")
     public ResponseEntity<Integer> createOrder(
             @ApiParam(value = "Данные для добавления нового заказа")
@@ -39,66 +39,63 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getIdOfLast());
     }
 
-    @PostMapping(_PATH + "add/Courier")
+    @PostMapping(_PATH + "add/courier")
     @ApiOperation(value = "Принятие заказа")
     public ResponseEntity<?> createCourier(
             @ApiParam(value = "Данные для добавления принятого оформленного заказа")
             @RequestBody Courier courier) {
-        orderAndCourier.create(courier.ID, courier.CourierPhone, 'P');
+        orderAndCourierService.create(courier.orderId, courier.courierPhone, "Processing");
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(_PATH + "get/AllOrders")
+    @GetMapping(_PATH + "get/orders")
     @ApiOperation(value = "Получение всех заказов со стороны заказчика")
     public ResponseEntity<List<Order>> getAllOrders(){
         List<Order> orders = orderService.getAll();
         return ResponseEntity.ok(orders);
     }
 
-    @GetMapping(_PATH + "get/AllCouriers")
+    @GetMapping(_PATH + "get/couriers")
     @ApiOperation(value = "Получение всех объявлений о заказах")
     public ResponseEntity<List<Courier>> getAllCouriers(){
-        List<Courier> couriers = orderAndCourier.getAll();
+        List<Courier> couriers = orderAndCourierService.getAll();
         return ResponseEntity.ok(couriers);
     }
 
-    @GetMapping(_PATH + "get/ActiveOrders")
+    @GetMapping(_PATH + "get/active-orders")
     @ApiOperation(value = "Получение всех курьерских заказов")
     public ResponseEntity<List<ActiveOrders>> getActiveOrders(
     ) {
-        List<ActiveOrders> orders = orderAndCourier.getActiveOrders();
+        List<ActiveOrders> orders = orderAndCourierService.getActiveOrders();
         if(orders.isEmpty())
             throw new NotFoundException();
         return ResponseEntity.ok(orders);
     }
 
-    @GetMapping(_PATH + "get/MyOrders")
+    @GetMapping(_PATH + "get/my-orders")
     @ApiOperation(value = "Получение всех заказов, связанных с переданным номер телефона. ")
     public ResponseEntity<List<MyOrders>> getMyOrders(
             @RequestParam(value = "phone", required = true) String phone
     ) {
-        List<MyOrders> orders = orderAndCourier.getMyOrders(phone);
+        List<MyOrders> orders = orderAndCourierService.getMyOrders(phone);
         return ResponseEntity.ok(orders);
     }
 
-    @GetMapping(_PATH + "get/Status")
-    @ApiOperation(value = "Получение статуса заказа по номеру и ID заказа")
+    @GetMapping(_PATH + "get/status")
+    @ApiOperation(value = "Получение статуса заказа по номеру и orderId заказа")
     public ResponseEntity<String> getStatus(
             @RequestBody Courier courier){
-        char result = orderAndCourier.getStatus(courier.ID, courier.getCourierPhone());
-        String string = result + "\0";
-        return ResponseEntity.ok(string);
+        String result = orderAndCourierService.getStatus(courier.orderId, courier.getCourierPhone());
+        return ResponseEntity.ok(result);
     }
 
 
-    @PatchMapping(_PATH + "Change/Status")
+    @PatchMapping(_PATH + "change/status")
     @ApiOperation(value = "Изменение статута заказа от заказчика")
     public  ResponseEntity<?> ChangeStatus(
             @ApiParam(value = "Данные для изменения статуса")
             @RequestBody Courier courier) {
-        if (courier.getStatus() == 'C' && courier.getStatus() == 'D')
-            throw new NotFoundException();
-        orderAndCourier.changeStatus(courier.ID, courier.Status, courier.getCourierPhone());
+        orderAndCourierService.changeStatus(courier.orderId, courier.status, courier.getCourierPhone());
         return ResponseEntity.ok().build();
     }
 }

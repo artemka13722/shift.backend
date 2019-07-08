@@ -34,7 +34,7 @@ public class MyOrdersExtractor implements ResultSetExtractor<List<MyOrders>>{
             catch (Exception e){
                 throw new NotFoundException();
             }
-            order.setStatus(rs.getString("status").charAt(0)); //Взять первый символ из строки
+            order.setStatus(rs.getString("status")); //Взять первый символ из строки
             order.setAccess(Integer.parseInt(rs.getString("access")));
             order.setNote(rs.getString("note"));
             order.setSize(rs.getString("size"));

@@ -12,56 +12,56 @@ import java.util.List;
 @Service
 public class OrderAndCourierService {
 
-    private final OrderAndCourierRepository OACR;
+    private final OrderAndCourierRepository orderAndCourierRepository;
 
     @Autowired
-    public  OrderAndCourierService(OrderAndCourierRepository OACR) {
-        this.OACR = OACR;
+    public  OrderAndCourierService(OrderAndCourierRepository orderAndCourierRepository) {
+        this.orderAndCourierRepository = orderAndCourierRepository;
     }
 
-    public void create(Integer OrderId, String CourierPhone, char Status){
-        OACR.create(OrderId, CourierPhone, Status);
+    public void create(Integer orderId, String courierPhone, String status){
+        orderAndCourierRepository.create(orderId, courierPhone, status);
     }
 
-    public boolean existAndActive(Integer OrderId){
-        return OACR.existAndActive(OrderId);
+    public boolean existAndActive(Integer orderId){
+        return orderAndCourierRepository.existAndActive(orderId);
     }
 
-    public Courier getCouier(Integer OrderId){
-        return OACR.getCourier(OrderId);
+    public Courier getCouier(Integer orderId){
+        return orderAndCourierRepository.getCourier(orderId);
     }
 
-    public boolean isCustomer(Integer OrderId, String phone){
-        return OACR.isCustomer(OrderId, phone);
+    public boolean isCustomer(Integer orderId, String phone){
+        return orderAndCourierRepository.isCustomer(orderId, phone);
     }
 
-    public boolean isCourier(Integer OrderId, String phone){
-        return OACR.isCourier(OrderId, phone);
+    public boolean isCourier(Integer orderId, String phone){
+        return orderAndCourierRepository.isCourier(orderId, phone);
     }
 
-    public boolean CourierExists(Integer OrderId){
-        return OACR.CourierExists(OrderId);
+    public boolean CourierExists(Integer orderId){
+        return orderAndCourierRepository.courierExists(orderId);
     }
 
-    public void changeStatus(Integer OrderId, char Status, String phone){
-        OACR.changeStatus(OrderId, Status, phone);
+    public void changeStatus(Integer orderId, String status, String phone){
+        orderAndCourierRepository.changeStatus(orderId, status, phone);
     }
 
     public List<MyOrders> getMyOrders(String phone){
-        return OACR.getMyOrders(phone);
+        return orderAndCourierRepository.getMyOrders(phone);
     }
 
     public String getPhone(Integer Id){
-        return OACR.getPhone(Id);
+        return orderAndCourierRepository.getPhone(Id);
     }
 
     public List<ActiveOrders> getActiveOrders(){
-        return OACR.getActiveOrders();
+        return orderAndCourierRepository.getActiveOrders();
     }
 
-    public char getStatus(Integer OrderId, String Phone){
-        return OACR.getStatus(OrderId, Phone);
+    public String getStatus(Integer orderId, String phone){
+        return orderAndCourierRepository.getStatus(orderId, phone);
     }
 
-    public List<Courier> getAll() { return  OACR.getAll(); }
+    public List<Courier> getAll() { return  orderAndCourierRepository.getAll(); }
 }

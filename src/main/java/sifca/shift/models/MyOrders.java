@@ -7,7 +7,7 @@ import java.util.Date;
 public class MyOrders {
 
     @ApiModelProperty(value = "Номер телефона заказчика/курьера", required = true)
-    private String Phone;
+    private String phone;
 
     @ApiModelProperty(value = "Адрес места, где находится вещь", required = true)
     private String fromAddress;
@@ -25,7 +25,7 @@ public class MyOrders {
     private Date deliveryTime;
 
     @ApiModelProperty(value = "Время и дата доставки заказа", required = true)
-    private char status;
+    private String status;
 
     @ApiModelProperty(value = "Код доступа", required = true)
     private Integer access;
@@ -39,9 +39,9 @@ public class MyOrders {
     public MyOrders() {
     }
 
-    public MyOrders(String Phone, String fromAddress, String toAddress, Integer price, Date orderTime,
-                    Date deliveryTime, Integer access, String note, String size, char Status) {
-        this.Phone = Phone;
+    public MyOrders(String phone, String fromAddress, String toAddress, Integer price, Date orderTime,
+                    Date deliveryTime, Integer access, String note, String size, String status) {
+        this.phone = phone;
         this.fromAddress = fromAddress;
         this.toAddress = toAddress;
         this.price = price;
@@ -50,21 +50,21 @@ public class MyOrders {
         this.access = access;
         this.note = note;
         this.size = size;
-        this.status = Status;
-    }
-
-
-    public char getStatus() {
-        return status;
-    }
-
-    public void setStatus(char Status) {
         this.status = status;
     }
 
-    public String getPhone() { return Phone; }
 
-    public void setPhone(String Phone) { this.Phone = Phone; }
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getPhone() { return phone; }
+
+    public void setPhone(String Phone) { this.phone = Phone; }
 
     public String getFromAddress() {
         return fromAddress;

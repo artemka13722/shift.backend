@@ -17,13 +17,12 @@ import java.util.List;
 public class OrderExtractor implements ResultSetExtractor<List<Order>>{
     @Override
     public List<Order> extractData(ResultSet rs) throws SQLException, DataAccessException{
-        Integer count = -1; // счетчик
         List<Order> orders = new ArrayList<>();
-        DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss"); // Нужен для парсинга стринга в дату
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); // Нужен для парсинга стринга в дату
 
         while(rs.next()){
             Order order = new Order();
-            order.setId(Integer.parseInt(rs.getString("Id")));
+            order.setId(Integer.parseInt(rs.getString("OrderId")));
             order.setOrderPhone(rs.getString("orderPhone"));
             order.setFromAddress(rs.getString("fromAddress"));
             order.setToAdress(rs.getString("toAddress"));
@@ -35,10 +34,11 @@ public class OrderExtractor implements ResultSetExtractor<List<Order>>{
             catch (Exception e){
                 throw new NotFoundException();
             }
-            order.setStatus(rs.getString("status").charAt(0)); //Взять первый символ из строки
+            order.setStatus(rs.getString("status")); //Взять первый символ из строки
             order.setNote(rs.getString("note"));
             order.setSize(rs.getString("size"));
+            orders.add(order);
         }
-        return new ArrayList<>(orders);
+        return orders;
     }
 }
