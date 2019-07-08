@@ -5,4 +5,9 @@ jdk:
   - oraclejdk8
 
 script:
+  - gradle wrapper 
   - ./gradlew build --scan -s
+ 
+ branches:
+  only:
+    - Artyom
