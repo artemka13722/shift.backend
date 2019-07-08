@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 @ConditionalOnProperty(name = "use.database", havingValue = "false")
-public class OrderAndCourier implements OrderAndCourierRepository {
+public class OrderAndCourierInMemory implements OrderAndCourierRepository {
     List<Courier> couriers = new ArrayList<>();
     private Integer count = -1;
     @Autowired
@@ -21,7 +21,7 @@ public class OrderAndCourier implements OrderAndCourierRepository {
     List<ActiveOrders> orders = new ArrayList<>();
 
     @Autowired
-    public OrderAndCourier(){
+    public OrderAndCourierInMemory(){
         if (existAndActive(++count))
             couriers.add(count, new Courier(count, "89132222222", 'P'));
     }
