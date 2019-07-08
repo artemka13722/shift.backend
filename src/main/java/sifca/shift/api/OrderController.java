@@ -1,7 +1,6 @@
 package sifca.shift.api;
 
 
-import sifca.shift.exception.NotFoundException;
 import sifca.shift.exception.modelsException.OrderException;
 import sifca.shift.models.Order;
 import sifca.shift.services.OrderService;

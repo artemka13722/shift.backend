@@ -1,6 +1,5 @@
 package sifca.shift.repositories;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import sifca.shift.exception.NotFoundException;
 import sifca.shift.exception.modelsException.AccesException;
 import sifca.shift.exception.modelsException.OrderException;
 import sifca.shift.models.ActiveOrders;
