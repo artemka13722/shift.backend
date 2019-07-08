@@ -1,7 +1,7 @@
 package sifca.shift.repositories;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import sifca.shift.exception.modelsException.AccesException;
+import sifca.shift.exception.NotFoundException;
 import sifca.shift.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -32,7 +32,7 @@ public class UserInMemory implements UserRepository{
     @Override
     public List<User> getAll(){
         if (Users.isEmpty()){
-            throw new AccesException();
+            throw new NotFoundException("Error getAll users", 17);
         }
         return Users;
     }
@@ -43,7 +43,7 @@ public class UserInMemory implements UserRepository{
             if (user.phone.equals(phone))
                 return user;
         }
-        throw new AccesException();
+        throw new NotFoundException("Error get phone user", 16);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class UserInMemory implements UserRepository{
                 return user;
             }
         }
-        throw new AccesException();
+        throw new NotFoundException("Error uodate user", 18);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class UserInMemory implements UserRepository{
         }
 
         if (!key)
-            throw new AccesException();
+            throw new NotFoundException("Error Delete", 19);
         else
         {
             --count;

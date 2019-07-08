@@ -3,7 +3,7 @@ package sifca.shift.repositories;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Component;
-import sifca.shift.exception.modelsException.DatabaseException;
+import sifca.shift.exception.NotFoundException;
 import sifca.shift.models.Order;
 
 import java.sql.ResultSet;
@@ -32,7 +32,7 @@ public class OrderExtractor implements ResultSetExtractor<List<Order>>{
                 order.setDeliveryTime(sdf.parse(rs.getString("deliveryTime")));
             }
             catch (Exception e){
-                throw new DatabaseException();
+                throw new NotFoundException("Error Order Extractor", 14);
             }
             order.setStatus(rs.getString("status")); //Взять первый символ из строки
             order.setNote(rs.getString("note"));

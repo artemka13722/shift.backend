@@ -1,7 +1,7 @@
 package sifca.shift.api;
 
 
-import sifca.shift.exception.modelsException.OrderException;
+import sifca.shift.exception.NotFoundException;
 import sifca.shift.models.Order;
 import sifca.shift.services.OrderService;
 import sifca.shift.models.Courier;
@@ -68,7 +68,7 @@ public class OrderController {
     ) {
         List<ActiveOrders> orders = orderAndCourierService.getActiveOrders();
         if(orders.isEmpty())
-            throw new OrderException();
+            throw new NotFoundException("Error getActiveOrders", 20);
         return ResponseEntity.ok(orders);
     }
 

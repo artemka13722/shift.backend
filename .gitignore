@@ -2,6 +2,9 @@
 ### Gradle template
 .gradle
 /build/
+.idea/
+out/
+.directory
 
 # Ignore Gradle GUI config
 gradle-app.setting

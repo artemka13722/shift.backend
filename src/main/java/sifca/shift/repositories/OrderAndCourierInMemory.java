@@ -1,7 +1,6 @@
 package sifca.shift.repositories;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import sifca.shift.exception.modelsException.AccesException;
-import sifca.shift.exception.modelsException.OrderException;
+import sifca.shift.exception.NotFoundException;
 import sifca.shift.models.ActiveOrders;
 import sifca.shift.models.Courier;
 import sifca.shift.models.MyOrders;
@@ -35,7 +34,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
             orderInMemory.changeStatus(orderId, "Processing");
         }
         else
-            throw new OrderException();
+            throw new NotFoundException("Error create Order", 9);
     }
 
     @Override
@@ -48,7 +47,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
             }
             return false;
         }
-        throw new OrderException();
+        throw new NotFoundException("Error existAndActive", 10);
     }
 
     @Override
@@ -58,7 +57,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
         }
         else
         {
-            throw new OrderException();
+            throw new NotFoundException("Error getCourier", 11);
         }
     }
 
@@ -73,7 +72,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
             else
                 return false;
         }
-        throw new OrderException();
+        throw new NotFoundException("Error isCustomer", 4);
     }
 
     @Override
@@ -87,7 +86,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
             else
                 return false;
         }
-        throw new OrderException();
+        throw new NotFoundException("Error isCourier", 5);
     }
 
     @Override
@@ -106,7 +105,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
         if ((!isCustomer(id, phone) && !isCourier(id, phone)    // Если это не заказчик, и не курьер или
                 || (!Status.equals("Closed") &&
                 !Status.equals("Done"))))                       // запрос не на отмену или закрытие заказа
-            throw new OrderException();                      // вернуть ошибку
+            throw new NotFoundException("Error changeStatus", 6);                      // вернуть ошибку
         else {
             if (Status.equals("Closed") &&
                     isCustomer(id, phone)) {                    // Если запрос на отмену, и это заказчик
@@ -168,7 +167,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
                 }
             }
         }
-        throw new AccesException();
+        throw new NotFoundException("Error getPhone courier", 7);
     }
 
     @Override
@@ -188,7 +187,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
     @Override
     public List<Courier> getAll(){
         if(couriers.isEmpty()){
-            throw new AccesException();
+            throw new NotFoundException("Error getAll couriers", 12);
         }
         return couriers;
     }
@@ -201,6 +200,6 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
         if (isCourier(orderId, phone)){
             return getCourier(orderId).getStatus();
         }
-        throw new AccesException();
+        throw new NotFoundException("Error getStatus Ordder or Courier", 8);
     }
 }

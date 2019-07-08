@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-import sifca.shift.exception.modelsException.NotFoundException;
+import sifca.shift.exception.NotFoundException;
 import sifca.shift.models.User;
 
 import javax.annotation.PostConstruct;
@@ -42,7 +42,7 @@ public class UserDatabase implements UserRepository {
 
         List<User> users = jdbcTemplate.query(getUserSql, params, userExtractor);
         if (users.isEmpty()) {
-            throw new NotFoundException();
+            throw new NotFoundException("Error get phone user", 16);
             //throw new DatabaseException();
         }
         return users.get(0);

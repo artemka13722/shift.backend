@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import javax.annotation.PostConstruct;
 
-import sifca.shift.exception.modelsException.DatabaseException;
+import sifca.shift.exception.NotFoundException;
 import sifca.shift.models.Order;
 
 import java.text.DateFormat;
@@ -102,7 +102,7 @@ public class OrderDatabase implements OrderRepository {
         List<Order> orders = jdbcTemplate.query(sql, params, orderExtractor);
 
         if(orders.isEmpty()){
-            throw new DatabaseException();
+            throw new NotFoundException("Error Get Order", 13);
         }
         return orders.get(0);
     }

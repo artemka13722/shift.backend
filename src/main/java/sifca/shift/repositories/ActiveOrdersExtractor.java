@@ -3,7 +3,7 @@ package sifca.shift.repositories;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Component;
-import sifca.shift.exception.modelsException.OrderException;
+import sifca.shift.exception.NotFoundException;
 import sifca.shift.models.ActiveOrders;
 
 import java.sql.ResultSet;
@@ -32,7 +32,7 @@ public class ActiveOrdersExtractor implements ResultSetExtractor<List<ActiveOrde
                 order.setDeliveryTime(sdf.parse(rs.getString("deliveryTime")));
             }
             catch (Exception e){
-                throw new OrderException();
+                throw new NotFoundException("Error ActiveOrders Extractor", 1);
             }
             order.setNote(rs.getString("note"));
             order.setSize(rs.getString("size"));
