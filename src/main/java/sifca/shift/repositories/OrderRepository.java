@@ -14,7 +14,7 @@ public interface OrderRepository {
                  Integer price,
                  Date orderTime,
                  Date deliveryTime,
-                 char status,
+                 String status,
                  String note,
                  String size
     );
@@ -25,7 +25,7 @@ public interface OrderRepository {
 
     boolean exists(Integer id);
 
-    void changeStatus(Integer id, char Status);
+    void changeStatus(Integer id, String Status);
 
     Integer getIdOfLast();
 }

@@ -27,7 +27,7 @@ public class Order {
     private Date deliveryTime;
 
     @ApiModelProperty(value = "Время и дата доставки заказа", required = true)
-    private char status;
+    private String status;
 
     @ApiModelProperty(value = "Примечание", required = true)
     private String note;
@@ -39,7 +39,7 @@ public class Order {
     }
 
     public Order(Integer Id, String orderPhone, String fromAddress, String toAddress, Integer price, Date orderTime,
-                 Date deliveryTime, char status, String note, String size) {
+                 Date deliveryTime, String status, String note, String size) {
         this.id = Id;
         this.orderPhone = orderPhone;
         this.fromAddress = fromAddress;
@@ -104,11 +104,11 @@ public class Order {
         this.deliveryTime = deliveryTime;
     }
 
-    public char getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(char status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

@@ -29,8 +29,8 @@ public class OrderInMemory implements OrderRepository{
             date2 = sdf.parse(stringDate2);
         }catch(Exception e){
         }
-        Orders.add(++count, new Order(count, "89130000000", "from", "to", 200, date1, date2, 'P', "lala", "small"));
-        Orders.add(++count, new Order(count, "89131111111", "from", "to", 300, date1, date2, 'A', "lala", "small"));
+        Orders.add(++count, new Order(count, "89130000000", "from", "to", 200, date1, date2, "Processing", "lala", "small"));
+        Orders.add(++count, new Order(count, "89131111111", "from", "to", 300, date1, date2, "Active", "lala", "small"));
     }
 
     // HAVE
@@ -51,12 +51,12 @@ public class OrderInMemory implements OrderRepository{
                         Integer price,
                         Date orderTime,
                         Date deliveryTime,
-                        char status,
+                        String status,
                         String note,
                         String size){
         Order order = new Order(count, orderPhone, fromAddress, toAddress, price, orderTime,
                 deliveryTime, status, note, size);
-        order.setStatus('A');
+        order.setStatus("Active");
         Orders.add(++count, order);
     }
 
@@ -66,9 +66,9 @@ public class OrderInMemory implements OrderRepository{
     }
 
     @Override
-    public Order getOrder(Integer OrderId){
+    public Order getOrder(Integer orderId){
         for (Order order : Orders){
-            if (OrderId.equals(order.getId())){
+            if (orderId.equals(order.getId())){
                 return order;
             }
         }
@@ -86,10 +86,10 @@ public class OrderInMemory implements OrderRepository{
     }
 
     @Override
-    public void changeStatus(Integer id, char Status)
+    public void changeStatus(Integer id, String status)
     {
         Order order = getOrder(id);
-        order.setStatus(Status);
-        Orders.set(id,order);
+        order.setStatus(status);
+        Orders.set(id, order);
     }
 }

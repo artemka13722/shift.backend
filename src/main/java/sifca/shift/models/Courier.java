@@ -3,45 +3,45 @@ package sifca.shift.models;
 import io.swagger.annotations.ApiModelProperty;
 
 public class Courier {
-    @ApiModelProperty(value = "ID взятого заказа")
-    public Integer ID;
+    @ApiModelProperty(value = "orderId взятого заказа")
+    public Integer orderId;
 
     @ApiModelProperty(value = "Номер заказчика")
-    public String CourierPhone;
+    public String courierPhone;
 
     @ApiModelProperty(value = "Статус заказа")
-    public char Status;
+    public String status;
 
     public Courier() {
     }
 
-    public Courier(Integer ID, String CourierPhone, char Status) {
-        this.ID = ID;
-        this.CourierPhone = CourierPhone;
-        this.Status = Status;
+    public Courier(Integer orderId, String courierPhone, String status) {
+        this.orderId = orderId;
+        this.courierPhone = courierPhone;
+        this.status = status;
     }
 
-    public Integer getID() {
-        return ID;
+    public Integer getOrderId() {
+        return orderId;
     }
 
-    public void setID(Integer ID) {
-        this.ID = ID;
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
     }
 
     public String getCourierPhone() {
-        return CourierPhone;
+        return courierPhone;
     }
 
-    public void setCourierPhone(String CourierPhone) {
-        this.CourierPhone = CourierPhone;
+    public void setCourierPhone(String courierPhone) {
+        this.courierPhone = courierPhone;
     }
 
-    public char getStatus() {
-        return Status;
+    public String getStatus() {
+        return status;
     }
 
-    public void setStatus(char Status) {
-        this.Status = Status;
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

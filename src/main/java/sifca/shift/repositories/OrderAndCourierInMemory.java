@@ -1,5 +1,6 @@
 package sifca.shift.repositories;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import sifca.shift.exception.NotFoundException;
 import sifca.shift.exception.modelsException.AccesException;
 import sifca.shift.exception.modelsException.OrderException;
 import sifca.shift.models.ActiveOrders;
@@ -24,15 +25,15 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
     @Autowired
     public OrderAndCourierInMemory(){
         if (existAndActive(++count))
-            couriers.add(count, new Courier(count, "89132222222", 'P'));
+            couriers.add(count, new Courier(count, "89132222222", "Processing"));
     }
 
     @Override
-    public void create(Integer OrderId, String CourierPhone, char Status){
-        if (existAndActive(OrderId)){
-            Courier courier = new Courier(OrderId, CourierPhone, Status);
+    public void create(Integer orderId, String courierPhone, String Status){
+        if (existAndActive(orderId)){
+            Courier courier = new Courier(orderId, courierPhone, Status);
             couriers.add(++count, courier);
-            orderInMemory.changeStatus(OrderId, 'P');
+            orderInMemory.changeStatus(orderId, "Processing");
         }
         else
             throw new OrderException();
@@ -43,7 +44,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
     {
         if (orderInMemory.exists(id)){
             Order order = orderInMemory.getOrder(id);
-            if (order.getStatus() == 'A'){
+            if (order.getStatus().equals("Active")){
                 return true;
             }
             return false;
@@ -52,9 +53,9 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
     }
 
     @Override
-    public Courier getCourier(Integer Id){
-        if (existAndActive(Id)){
-            return couriers.get(Id);
+    public Courier getCourier(Integer id){
+        if (existAndActive(id)){
+            return couriers.get(id);
         }
         else
         {
@@ -63,10 +64,10 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
     }
 
     @Override
-    public boolean isCustomer(Integer Id, String phone){
-        if (orderInMemory.exists(Id)){
-            Order order = orderInMemory.getOrder(Id);
-            Courier courier = getCourier(Id);
+    public boolean isCustomer(Integer id, String phone){
+        if (orderInMemory.exists(id)){
+            Order order = orderInMemory.getOrder(id);
+            Courier courier = getCourier(id);
             if (!phone.equals(courier.getCourierPhone()) && phone.equals(order.getOrderPhone())) {
                 return true;
             }
@@ -77,10 +78,10 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
     }
 
     @Override
-    public boolean isCourier(Integer Id, String phone){
-        if (orderInMemory.exists(Id)){
-            Order order = orderInMemory.getOrder(Id);
-            Courier courier = getCourier(Id);
+    public boolean isCourier(Integer id, String phone){
+        if (orderInMemory.exists(id)){
+            Order order = orderInMemory.getOrder(id);
+            Courier courier = getCourier(id);
             if (phone.equals(courier.getCourierPhone()) && !phone.equals(order.getOrderPhone())){
                 return true;
             }
@@ -91,9 +92,9 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
     }
 
     @Override
-    public boolean CourierExists(Integer id){
+    public boolean courierExists(Integer id){
         for (Courier courier : couriers){
-            if (courier.getID().equals(id)){
+            if (courier.getOrderId().equals(id)){
                 return true;
             }
         }
@@ -102,32 +103,35 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
 
     /// CHANGE, try to make this more easy and clearer
     @Override
-    public void changeStatus(Integer id, char Status, String phone) {
+    public void changeStatus(Integer id, String Status, String phone) {
         if ((!isCustomer(id, phone) && !isCourier(id, phone)    // Если это не заказчик, и не курьер или
-                || (Status != 'C' && Status != 'D')))           // запрос не на отмену или закрытие заказа
+                || (!Status.equals("Closed") &&
+                !Status.equals("Done"))))                       // запрос не на отмену или закрытие заказа
             throw new OrderException();                      // вернуть ошибку
         else {
-            if (Status == 'C' && isCustomer(id, phone)) {       // Если запрос на отмену, и это заказчик
-                if (!CourierExists(id)) {                       // Если у заказа есть курьер
+            if (Status.equals("Closed") &&
+                    isCustomer(id, phone)) {                    // Если запрос на отмену, и это заказчик
+                if (!courierExists(id)) {                       // Если у заказа есть курьер
                     Courier courier = getCourier(id);           // Получаем этого курьера
-                    courier.Status = Status;                    // Присваиваем ему переданный статус
+                    courier.status = Status;                    // Присваиваем ему переданный статус
                     couriers.set(id, courier);                  // меняем данные в List
                 }
                 orderInMemory.changeStatus(id, Status);          // Меняем статус заказа на отмененный
             } else {                                            // Если это курьер
-                if (Status == 'D') {                            // Если запрос на закрытие
+                if (Status.equals("Done")) {                            // Если запрос на закрытие
                     orderInMemory.changeStatus(id, Status);      // Закрытие заказа со стороны заказчика
                 }
                 else {                                          // Если запрос на отмену
-                    orderInMemory.changeStatus(id, 'A');         // Статус заказа меняется на активный
-                   // changeStatus(id, Status, phone);            // Закрытие заказа со стороны курьера
+                    orderInMemory.changeStatus(id, "Active");         // Статус заказа меняется на активный
+                    // changeStatus(orderId, status, phone);            // Закрытие заказа со стороны курьера
                     Courier courier = getCourier(id);           // Получаем этого курьера
-                    courier.Status = Status;                    // Присваиваем ему переданный статус
+                    courier.status = Status;                    // Присваиваем ему переданный статус
                     couriers.set(id, courier);
                 }
             }
         }
     }
+
 
     @Override
     public List<MyOrders> getMyOrders(String phone){
@@ -158,9 +162,9 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
 
     @Override
     public String getPhone(Integer Id){
-        if (CourierExists(Id)){
+        if (courierExists(Id)){
             for(Courier courier: couriers){
-                if(Id.equals(courier.ID)){
+                if(Id.equals(courier.orderId)){
                     return courier.getCourierPhone();
                 }
             }
@@ -173,7 +177,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
         Integer count = -1;
         for (Integer index = 0; orderInMemory.exists(index); ++index){
             Order order = orderInMemory.getOrder(index);
-            if (order.getStatus() == 'A'){
+            if (order.getStatus().equals("Active")){
                 orders.add(++count, new ActiveOrders(order.getOrderPhone(), order.getFromAddress(), order.getToAddress(),
                         order.getPrice(), order.getOrderTime(), order.getDeliveryTime(),
                         order.getNote(), order.getSize()));
@@ -191,12 +195,12 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
     }
 
     @Override
-    public char getStatus(Integer OrderId, String phone){
-        if (isCustomer(OrderId, phone)){
-            return orderInMemory.getOrder(OrderId).getStatus();
+    public String getStatus(Integer orderId, String phone){
+        if (isCustomer(orderId, phone)){
+            return orderInMemory.getOrder(orderId).getStatus();
         }
-        if (isCourier(OrderId, phone)){
-            return getCourier(OrderId).getStatus();
+        if (isCourier(orderId, phone)){
+            return getCourier(orderId).getStatus();
         }
         throw new AccesException();
     }

@@ -8,19 +8,19 @@ import java.util.List;
 
 public interface OrderAndCourierRepository {
 
-    void create(Integer OrderId, String CourierPhone, char Status);
+    void create(Integer orderId, String courierPhone, String status);
 
     boolean existAndActive(Integer id);
 
-    Courier getCourier(Integer Id);
+    Courier getCourier(Integer id);
 
-    boolean isCustomer(Integer Id, String phone);
+    boolean isCustomer(Integer id, String phone);
 
-    boolean isCourier(Integer Id, String phone);
+    boolean isCourier(Integer id, String phone);
 
-    boolean CourierExists(Integer id);
+    boolean courierExists(Integer id);
 
-    void changeStatus(Integer id, char Status, String phone);
+    void changeStatus(Integer id, String status, String phone);
 
     List<MyOrders> getMyOrders(String phone);
 
@@ -30,5 +30,5 @@ public interface OrderAndCourierRepository {
 
     List<Courier> getAll();
 
-    char getStatus(Integer OrderId, String phone);
+    String getStatus(Integer orderId, String phone);
 }

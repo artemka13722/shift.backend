@@ -19,10 +19,11 @@ public class CourierExtractor implements ResultSetExtractor<List<Courier>>{
 
         while (rs.next()){
             Courier courier = new Courier();
-            courier.setID(Integer.parseInt(rs.getString("Id")));
+            courier.setOrderId(Integer.parseInt(rs.getString("OrderId")));
             courier.setCourierPhone(rs.getString("courierPhone"));
-            courier.setStatus(rs.getString("status").charAt(0));
+            courier.setStatus(rs.getString("status"));
+            couriers.add(courier);
         }
-        return new ArrayList<>(couriers);
+        return couriers;
     }
 }
