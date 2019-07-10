@@ -46,10 +46,6 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     @Autowired
     private ActiveOrdersExtractor activeOrdersExtractor;
 
-    List<ActiveOrders> orders = new ArrayList<>();
-
-    List<Courier> couriers = new ArrayList<>();
-
     @PostConstruct
     public void initialize(){
         String createTable = "CREATE TABLE IF NOT EXISTS Couriers(" +
@@ -179,9 +175,9 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
                 .addValue("phone",phone);
         myOrders.addAll(jdbcTemplate.query(sql, param, myOrdersExtractor));
         // ADDING AS A COURIER
-        sql = "SELECT id, title, status, price, size, deliveryDate, deliveryTime, fromAddress,\" +\n" +
-                "                \"toAddress, orderPhone, contactPhone, note, 0 as access FROM Orders \" +\n" +
-                "                \"JOIN couriers ON orders.OrderId = couriers.OrderId " +
+        sql = "SELECT id, title, status, price, size, deliveryDate, deliveryTime, fromAddress, " +
+                "toAddress, orderPhone, contactPhone, note, 0 as access FROM Orders " +
+                "JOIN couriers ON orders.OrderId = couriers.OrderId " +
                 "WHERE couriers.courierPhone = :phone;";
         param = new MapSqlParameterSource()
                 .addValue("phone",phone);
@@ -192,7 +188,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     @Override
     public String getPhone(Integer Id){
         if (courierExists(Id)){
-            String Sql = "SELECT CourierPhone FROM couriers" +
+            String Sql = "SELECT CourierPhone FROM couriers " +
                     "WHERE OrderId = :Id";
             MapSqlParameterSource param = new MapSqlParameterSource()
                     .addValue("Id", Id);
