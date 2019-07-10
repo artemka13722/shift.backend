@@ -7,5 +7,4 @@ import lombok.Data;
 @AllArgsConstructor
 public class NotFoundException extends RuntimeException {
     private String msg;
-    private int key_error;
 }

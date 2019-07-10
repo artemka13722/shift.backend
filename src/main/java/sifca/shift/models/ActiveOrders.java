@@ -1,10 +1,16 @@
 package sifca.shift.models;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Time;
 import java.util.Date;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ActiveOrders {
 
     @ApiModelProperty(value = "Имя заказа", required = true)
@@ -30,84 +36,4 @@ public class ActiveOrders {
 
     @ApiModelProperty(value = "Примечание", required = true)
     private String note;
-
-    public ActiveOrders() {
-    }
-
-
-    public ActiveOrders(String title, Integer price, String size, Date deliveryDate, Date deliveryTime,
-                        String fromAddress, String toAddress, String note) {
-        this.title = title;
-        this.price = price;
-        this.size = size;
-        this.deliveryDate = deliveryDate;
-        this.deliveryTime = deliveryTime;
-        this.fromAddress = fromAddress;
-        this.toAddress = toAddress;
-        this.note = note;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Integer getPrice() {
-        return price;
-    }
-
-    public void setPrice(Integer price) {
-        this.price = price;
-    }
-
-    public String getSize() {
-        return size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
-    }
-
-    public Date getDeliveryDate() {
-        return deliveryDate;
-    }
-
-    public void setDeliveryDate(Date deliveryDate) {
-        this.deliveryDate = deliveryDate;
-    }
-
-    public Date getDeliveryTime() {
-        return deliveryTime;
-    }
-
-    public void setDeliveryTime(Date deliveryTime) {
-        this.deliveryTime = deliveryTime;
-    }
-
-    public String getFromAddress() {
-        return fromAddress;
-    }
-
-    public void setFromAddress(String fromAddress) {
-        this.fromAddress = fromAddress;
-    }
-
-    public String getToAddress() {
-        return toAddress;
-    }
-
-    public void setToAddress(String toAddress) {
-        this.toAddress = toAddress;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
 }

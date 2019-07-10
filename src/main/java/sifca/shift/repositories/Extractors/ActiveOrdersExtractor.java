@@ -30,7 +30,7 @@ public class ActiveOrdersExtractor implements ResultSetExtractor<List<ActiveOrde
                 order.setDeliveryTime(time.parse(rs.getString("deliveryTime")));
             }
             catch (Exception e){
-                throw new NotFoundException("Error ActiveOrders Extractor", 1);
+                throw new NotFoundException("Error ActiveOrders Extractor");
             }
             order.setFromAddress(rs.getString("fromAddress"));
             order.setToAddress(rs.getString("toAddress"));

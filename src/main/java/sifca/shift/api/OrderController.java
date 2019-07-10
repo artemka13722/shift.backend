@@ -33,7 +33,7 @@ public class OrderController {
             @RequestBody Order order) {
         orderService.create(null, order.getTitle(), order.getOrderPhone(), order.getFromAddress(),
                 order.getToAddress(), order.getContactPhone(), order.getPrice(), order.getDeliveryDate(),
-                order.getDeliveryTime(), order.getNote(), order.getSize());
+                order.getDeliveryTime(), order.getStatus(), order.getNote(), order.getSize());
         return ResponseEntity.ok(orderService.getIdOfLast());
     }
 
@@ -70,7 +70,7 @@ public class OrderController {
     ) {
         List<ActiveOrders> orders = orderAndCourierService.getActiveOrders();
         if(orders.isEmpty())
-            throw new NotFoundException("Error getActiveOrders", 20);
+            throw new NotFoundException("No orders");
         return ResponseEntity.ok(orders);
     }
 

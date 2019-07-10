@@ -44,15 +44,15 @@ public class OrderInMemory implements OrderRepository {
         }catch(Exception e){
         }
         Orders.add(++count, new Order(count, "UUU", "89130000000", "from", "to", "89130000000", 200, date1,
-                time1, "lala", "small"));
+                time1, "Active", "lala", "small"));
         Orders.add(++count, new Order(count, "BUU", "89131111111", "from", "to", "89131111111", 300, date2,
-                time2, "lala", "small"));
+                time2, "Active", "lala", "small"));
     }
 
     @Override
     public List<Order> getAll(){
         if(Orders.isEmpty()){
-            throw new NotFoundException();
+            throw new NotFoundException("No orders");
         }
         return Orders;
     }
@@ -67,15 +67,15 @@ public class OrderInMemory implements OrderRepository {
                        Integer price,
                        Date deliveryDate,
                        Date deliveryTime,
+                       String status,
                        String note,
                        String size){
         if (!exists(id) || !userService.exists(orderPhone)) {
             Order order = new Order(count, title, orderPhone, fromAddress, toAddress, contactPhone,price,
-                    deliveryDate, deliveryTime, note, size);
-            order.setStatus("Active");
+                    deliveryDate, deliveryTime, status, note, size);
             Orders.add(++count, order);
         }
-        throw new NotFoundException();
+        throw new NotFoundException("User does not exist or order is already exist");
     }
 
     @Override
@@ -112,6 +112,6 @@ public class OrderInMemory implements OrderRepository {
             Orders.set(id, order);
         }
         else
-            throw new NotFoundException();
+            throw new NotFoundException("Order does not exist");
     }
 }

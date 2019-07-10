@@ -38,7 +38,7 @@ public class UserController {
             @ApiParam(value = "Данные для нового пользователя (Номер телефона, имя)/" +
                     "Some data for a new user(phone number, name")
             @RequestBody User user){
-        UserService.create(user.phone, user.name);
+        UserService.create(user.getPhone(), user.getName());
         return ResponseEntity.ok().build();
     }
 
@@ -51,7 +51,7 @@ public class UserController {
             @ApiParam(value = "Новые данные для пользователи (Номер телефона, имя)/" +
                     "New data for the user(phone number, name")
             @RequestBody User user) {
-        UserService.update(phone, user.phone, user.name);
+        UserService.update(phone, user.getPhone(), user.getName());
         return ResponseEntity.ok().build();
     }
 

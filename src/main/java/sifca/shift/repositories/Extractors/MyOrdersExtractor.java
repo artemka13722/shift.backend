@@ -31,7 +31,7 @@ public class MyOrdersExtractor implements ResultSetExtractor<List<MyOrders>>{
                 order.setDeliveryTime(sdf.parse(rs.getString("deliveryTime")));
             }
             catch (Exception e){
-                throw new NotFoundException("Error MyOrder Extractor", 2);
+                throw new NotFoundException("Date is incorrect");
             }
             order.setFromAddress(rs.getString("fromAddress"));
             order.setToAddress(rs.getString("toAddress"));

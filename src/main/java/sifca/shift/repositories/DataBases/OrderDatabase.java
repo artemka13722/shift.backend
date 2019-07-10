@@ -25,9 +25,10 @@ public class OrderDatabase implements OrderRepository {
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
 
-    Date date1, date2;
+    Date date1, date2, time1;
     public List<Order> Orders = new ArrayList<>();
-    DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+    DateFormat date = new SimpleDateFormat("dd/MM/yyyy");
+    DateFormat time = new SimpleDateFormat("hh:mm:ss");
     String OrderIdGenerator = "create sequence ORDERID_GENERATOR";
 
     @Autowired
@@ -51,13 +52,15 @@ public class OrderDatabase implements OrderRepository {
                 "size nvarchar(30) NOT NULL" +
                 ");";
         try{
-            String stringDate="01/12/1995 17:30:20";
-            date1 = sdf.parse(stringDate);
+            String stringDate = "01/12/1995";
+            String stringTime = "17:30:20";
+            date1 = date.parse(stringDate);
+            time1 = time.parse(stringTime);
         }catch(Exception e){
         }
         jdbcTemplate.update(OrderIdGenerator, new MapSqlParameterSource());
         jdbcTemplate.update(createOrderTable, new MapSqlParameterSource());
-        //create(null, "BULKA", "89135890000", "dwadaw", "dwadaw", "89135890000", 100, date2, "Active", "dwaaw", "dwad");
+        create(null, "BULKA", "89135890000", "dwadaw", "dwadaw", "89135890000", 100, date1, time1, "Processing", "dwaaw", "dwad");
     }
 
     @Override
@@ -70,10 +73,12 @@ public class OrderDatabase implements OrderRepository {
                        Integer price,
                        Date deliveryDate,
                        Date deliveryTime,
+                       String status,
                        String note,
                        String size){
-        String SQLinsert = "INSERT INTO orders VALUES(:title, :orderPhone, " +
-                ":fromAddress, :toAddress, :contactPhone :price, " +
+        String SQLinsert = "INSERT INTO orders(title, orderphone, fromaddress, toaddress, contactphone," +
+                "price, deliverydate, deliverytime, status, note, size) VALUES(:title, :orderPhone, " +
+                ":fromAddress, :toAddress, :contactPhone, :price, " +
                 ":deliveryDate, :deliveryTime, :status, :note, :size);";
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("title", title)
@@ -84,7 +89,7 @@ public class OrderDatabase implements OrderRepository {
                 .addValue("price", price)
                 .addValue("deliveryDate", deliveryDate)
                 .addValue("deliveryTime", deliveryTime)
-                .addValue("status", "Active")
+                .addValue("status", status)
                 .addValue("note", note)
                 .addValue("size", size);
 
@@ -105,7 +110,7 @@ public class OrderDatabase implements OrderRepository {
         List<Order> orders = jdbcTemplate.query(sql, params, orderExtractor);
 
         if(orders.isEmpty()){
-            throw new NotFoundException("Error Get Order", 13);
+            throw new NotFoundException("Error Get Order");
         }
         return orders.get(0);
     }
@@ -132,7 +137,7 @@ public class OrderDatabase implements OrderRepository {
             jdbcTemplate.update(sql, params);
         }
         else
-            throw new NotFoundException();
+            throw new NotFoundException("Order does not exist");
     }
 
     @Override

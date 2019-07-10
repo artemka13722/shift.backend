@@ -16,6 +16,7 @@ public interface OrderRepository {
                  Integer price,
                  Date deliveryDate,
                  Date deliveryTime,
+                 String status,
                  String size,
                  String note
     );

@@ -26,7 +26,7 @@ public class OrderExtractor implements ResultSetExtractor<List<Order>>{
         while(rs.next()){
             Order order = new Order();
             order.setId(Integer.parseInt(rs.getString("OrderId")));
-            order.setTitle(rs.getString("title"));
+            order.setTitle(rs.getString("Title"));
             order.setOrderPhone(rs.getString("orderPhone"));
             order.setFromAddress(rs.getString("fromAddress"));
             order.setToAddress(rs.getString("toAddress"));
@@ -37,7 +37,7 @@ public class OrderExtractor implements ResultSetExtractor<List<Order>>{
                 order.setDeliveryTime(time.parse(rs.getString("deliveryTime")));
             }
             catch (Exception e){
-                throw new NotFoundException("Error Order Extractor", 14);
+                throw new NotFoundException("Date is incorrect");
             }
             order.setStatus(rs.getString("status")); //Взять первый символ из строки
             order.setNote(rs.getString("note"));

@@ -58,7 +58,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
                 "Status varchar(15) NOT NULL CHECK(Status IN('Done', 'Processing', 'Closed'))" +
                 ");";
         jdbcTemplate.update(createTable, new MapSqlParameterSource());
-        //create(1, "89135895600", "Processing");
+        //create(1, "89135895600", "Active");
     }
 
     @Override
@@ -70,17 +70,16 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
             }
             return false;
         }
-        throw new NotFoundException("Error get Order", 3);
+        throw new NotFoundException("Order does not exist");
     }
 
     @Override
-    public void create(Integer orderId, String courierPhone, String Status){
+    public void create(Integer orderId, String courierPhone, String status){
         if (existAndActive(orderId) && !courierExists(orderId) && userService.exists(courierPhone)){
-            String SqlInsert = "INSERT INTO Couriers VALUES(:orderId, :courierPhone,:Status);";
+            String SqlInsert = "INSERT INTO Couriers VALUES(:orderId, :courierPhone, 'Processing');";
             MapSqlParameterSource param = new MapSqlParameterSource()
                     .addValue("orderId", orderId)
-                    .addValue("courierPhone", courierPhone)
-                    .addValue("Status", Status);
+                    .addValue("courierPhone", courierPhone);
             jdbcTemplate.update(SqlInsert, param);
         }
     }
@@ -108,7 +107,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
                 return false;
             return true;
         }
-        throw new NotFoundException();
+        throw new NotFoundException("Order does not exist");
     }
 
     @Override
@@ -125,7 +124,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
                 return false;
             return true;
         }
-        throw new NotFoundException();
+        throw new NotFoundException("Order does not exist");
     }
 
     @Override
@@ -166,7 +165,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
             }
         }
         else
-            throw new NotFoundException();
+            throw new NotFoundException("Order does not exist");
     }
 
     @Override
@@ -200,7 +199,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
             List <Courier> couriers = jdbcTemplate.query(Sql, param, courierExtractor);
             return couriers.get(0).getCourierPhone();
         }
-        throw new NotFoundException("Error getPhone courier", 7);
+        throw new NotFoundException("Courier does not exist");
     }
 
     @Override
@@ -228,6 +227,6 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
         if (isCourier(orderId, phone)){
             return getCourier(orderId).getStatus();
         }
-        throw new NotFoundException("Error getStatus Ordder or Courier", 8);
+        throw new NotFoundException("Order does not exist or the phone number is incorrect");
     }
 }

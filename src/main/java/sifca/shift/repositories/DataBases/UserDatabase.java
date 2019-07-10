@@ -43,7 +43,7 @@ public class UserDatabase implements UserRepository {
             List<User> users = jdbcTemplate.query(getUserSql, params, userExtractor);
             return users.get(0);
         }
-        throw new NotFoundException(); // user is already exists
+        throw new NotFoundException("User does not exist"); // user is already exists
     }
 
 
@@ -58,7 +58,7 @@ public class UserDatabase implements UserRepository {
             jdbcTemplate.update(sqlUpdate, params);
         }
         else
-            throw new NotFoundException(); // user does not exist
+            throw new NotFoundException("User does not exist"); // user does not exist
     }
 
     @Override
@@ -70,7 +70,7 @@ public class UserDatabase implements UserRepository {
             jdbcTemplate.update(deleteUserSql, params);
         }
         else
-            throw new NotFoundException(); // user does not exist
+            throw new NotFoundException("User does not exist"); // user does not exist
     }
 
     @Override
@@ -83,7 +83,7 @@ public class UserDatabase implements UserRepository {
             jdbcTemplate.update(createUserSql, userParams);
         }
         else
-            throw new NotFoundException(); // user does not exist
+            throw new NotFoundException("User does not exist"); // user does not exist
     }
 
     @Override
@@ -93,7 +93,7 @@ public class UserDatabase implements UserRepository {
         if (!users.isEmpty()) {
             return users;
         }
-        throw new NotFoundException(); // Have no users
+        throw new NotFoundException("No users"); // Have no users
     }
 
     @Override

@@ -27,10 +27,11 @@ public class OrderService {
                         Integer price,
                         Date deliveryDate,
                         Date deliveryTime,
+                        String status,
                         String note,
                         String size) {
         orderRepository.create(Id, title, orderPhone, fromAddress, toAddress, contactPhone, price,
-                deliveryDate, deliveryTime, note, size);
+                deliveryDate, deliveryTime, status, note, size);
     }
 
     public Order getOrder(Integer orderId) { return orderRepository.getOrder(orderId); }

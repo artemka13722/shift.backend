@@ -14,7 +14,7 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     protected ResponseEntity<AwesomeResponse> handleNotFoundException(NotFoundException exception) {
-        return new ResponseEntity<>(new AwesomeResponse(exception.getMsg(), exception.getKey_error()), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new AwesomeResponse(exception.getMsg()), HttpStatus.NOT_FOUND);
         //return new ResponseEntity<>(new AwesomeResponse("Error ¯\\_(ツ)_/¯ "), HttpStatus.NOT_FOUND);
     }
 
@@ -22,6 +22,5 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
     @AllArgsConstructor
     private static class AwesomeResponse {
         private String message;
-        private int error_key;
     }
 }

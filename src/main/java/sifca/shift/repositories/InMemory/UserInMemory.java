@@ -33,7 +33,7 @@ public class UserInMemory implements UserRepository {
     @Override
     public List<User> getAll(){
         if (Users.isEmpty()){
-            throw new NotFoundException();
+            throw new NotFoundException("No users");
         }
         return Users;
     }
@@ -42,25 +42,25 @@ public class UserInMemory implements UserRepository {
     public User getOne(String phone){
         if (exists(phone)) {
             for (User user : Users) {
-                if (user.phone.equals(phone))
+                if (user.getPhone().equals(phone))
                     return user;
             }
         }
-        throw new NotFoundException();
+        throw new NotFoundException("No user with the phone number");
     }
 
     @Override
     public void update(String oldPhone, String phone, String name){
         if (!exists(phone) && exists(oldPhone)) {
             for (User user : Users) {
-                if (user.phone.equals(oldPhone)) {
-                    user.phone = phone;
-                    user.name = name;
+                if (user.getPhone().equals(oldPhone)) {
+                    user.setPhone(phone);
+                    user.setName(name);
                     break;
                 }
             }
         }
-        throw new NotFoundException();
+        throw new NotFoundException("No user with the phone number or user is already exists");
     }
 
     @Override
@@ -68,14 +68,14 @@ public class UserInMemory implements UserRepository {
         if (exists(phone)) {
             User delUser = new User();
             for (User user : Users) {
-                if (user.phone.equals(phone)) {
+                if (user.getPhone().equals(phone)) {
                     delUser = user;
                     break;
                 }
             }
             Users.remove(delUser);
         }
-        throw new NotFoundException();
+        throw new NotFoundException("User does not exists");
     }
 
     @Override
@@ -83,18 +83,18 @@ public class UserInMemory implements UserRepository {
         if (!exists(phone)) {
             Users.add(++count, new User(phone, name));
         }
-        throw new NotFoundException();
+        throw new NotFoundException("User exitsts");
     }
 
     @Override
     public boolean exists(String phone){
         if (!Users.isEmpty()){
             for (User user: Users){
-                if (user.phone.equals(phone))
+                if (user.getPhone().equals(phone))
                     return true;
             }
             return false;
         }
-        throw new NotFoundException();
+        throw new NotFoundException("No users");
     }
 }
