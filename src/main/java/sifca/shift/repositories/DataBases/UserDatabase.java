@@ -83,7 +83,7 @@ public class UserDatabase implements UserRepository {
             jdbcTemplate.update(createUserSql, userParams);
         }
         else
-            throw new NotFoundException("User does not exist"); // user does not exist
+            throw new NotFoundException("User is already exist"); // user does not exist
     }
 
     @Override

@@ -1,5 +1,6 @@
 package sifca.shift.api;
 
+import sifca.shift.exception.NotFoundException;
 import sifca.shift.models.User;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -9,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 @Api(description = "Запросы для работы с пользователями/Queries for work with users")
@@ -17,6 +20,15 @@ public class UserController {
 
     @Autowired
     private sifca.shift.services.UserService UserService;
+
+    public boolean isCorrectPhone(String phone){
+        Pattern p = Pattern.compile("[0-9]+");
+        Matcher m = p.matcher(phone);
+        if (m.matches()) {
+            return true;
+        }
+        return false;
+    }
 
     @GetMapping(USER_PATH + "/getAll")
     @ApiOperation(value = "Получение всех пользователей/Adding all users")
@@ -29,7 +41,10 @@ public class UserController {
     @ApiOperation(value = "Получение информации о пользователе по номеру телефона" +
             "/Getting all information(only name, yes) about the user having the phone number")
     public User getOne(@RequestParam(value = "phone", required = true) String phone){
-        return UserService.getOne(phone);
+        if (isCorrectPhone(phone)) {
+            return UserService.getOne(phone);
+        }
+        throw new NotFoundException("Phone number is incorrect");
     }
 
     @PostMapping(USER_PATH + "/add")
@@ -38,8 +53,11 @@ public class UserController {
             @ApiParam(value = "Данные для нового пользователя (Номер телефона, имя)/" +
                     "Some data for a new user(phone number, name")
             @RequestBody User user){
-        UserService.create(user.getPhone(), user.getName());
-        return ResponseEntity.ok().build();
+        if (isCorrectPhone(user.getPhone())) {
+            UserService.create(user.getPhone(), user.getName());
+            return ResponseEntity.ok().build();
+        }
+        throw new NotFoundException("Phone number is incorrect");
     }
 
     @PatchMapping(USER_PATH + "/update")
@@ -51,8 +69,11 @@ public class UserController {
             @ApiParam(value = "Новые данные для пользователи (Номер телефона, имя)/" +
                     "New data for the user(phone number, name")
             @RequestBody User user) {
-        UserService.update(phone, user.getPhone(), user.getName());
-        return ResponseEntity.ok().build();
+        if (isCorrectPhone(user.getPhone())) {
+            UserService.update(phone, user.getPhone(), user.getName());
+            return ResponseEntity.ok().build();
+        }
+        throw new NotFoundException("Phone number is incorrect");
     }
 
     @DeleteMapping(USER_PATH + "/delete/{phone}")
@@ -62,7 +83,10 @@ public class UserController {
             @ApiParam(value = "Номер телефона пользователя, которого нужно удалить/" +
                     "User's phone number which needs to delete")
             @PathVariable String phone) {
-        UserService.delete(phone);
-        return ResponseEntity.ok().build();
+        if (isCorrectPhone(phone)) {
+            UserService.delete(phone);
+            return ResponseEntity.ok().build();
+        }
+        throw new NotFoundException("Phone number is incorrect");
     }
 }

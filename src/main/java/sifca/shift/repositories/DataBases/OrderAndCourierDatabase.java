@@ -172,16 +172,16 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     public List<MyOrders> getMyOrders(String phone){
         List<MyOrders> myOrders = new ArrayList<>();
         // ADDING AS A CUSTOMER
-        String sql = "SELECT orderPhone, fromAddress, toAddress, price, orderTime," +
-                " deliveryTime, status, 0 as access, note, size FROM Orders " +
+        String sql = "SELECT id, title, status, price, size, deliveryDate, deliveryTime, fromAddress," +
+                "toAddress, orderPhone, contactPhone, note, 0 as access FROM Orders " +
                 "WHERE orderPhone = :phone;";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("phone",phone);
         myOrders.addAll(jdbcTemplate.query(sql, param, myOrdersExtractor));
         // ADDING AS A COURIER
-        sql = "SELECT orderPhone, fromAddress, toAddress, price, orderTime," +
-                " deliveryTime, couriers.status, 0 as access, note, size FROM Orders " +
-                "JOIN couriers ON Orders.OrderId = Couriers.OrderId " +
+        sql = "SELECT id, title, status, price, size, deliveryDate, deliveryTime, fromAddress,\" +\n" +
+                "                \"toAddress, orderPhone, contactPhone, note, 0 as access FROM Orders \" +\n" +
+                "                \"JOIN couriers ON orders.OrderId = couriers.OrderId " +
                 "WHERE couriers.courierPhone = :phone;";
         param = new MapSqlParameterSource()
                 .addValue("phone",phone);
@@ -205,8 +205,8 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     @Override
     public List<ActiveOrders> getActiveOrders(){
         List<ActiveOrders> activeOrders = new ArrayList<>();
-        String sql = "SELECT orderPhone, fromAddress, toAddress, price, orderTime," +
-                " deliveryTime, note, size FROM Orders " +
+        String sql = "SELECT title, price, size, deliveryDate, deliveryTime, fromAddress, " +
+                "toAddress, note FROM Orders " +
                 "WHERE status = 'Active';";
         activeOrders.addAll(jdbcTemplate.query(sql, activeOrdersExtractor));
         return activeOrders;
@@ -216,6 +216,8 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     public List<Courier> getAll(){
         String sql = "SELECT * FROM couriers;";
         List<Courier> couriers = jdbcTemplate.query(sql, courierExtractor);
+        if (couriers.isEmpty())
+            throw new NotFoundException("No couriers");
         return couriers;
     }
 

@@ -25,9 +25,8 @@ public class OrderDatabase implements OrderRepository {
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
 
-    Date date1, date2, time1;
-    public List<Order> Orders = new ArrayList<>();
-    DateFormat date = new SimpleDateFormat("dd/MM/yyyy");
+    Date date1, time1;
+    DateFormat date = new SimpleDateFormat("yyyy/MM/dd");
     DateFormat time = new SimpleDateFormat("hh:mm:ss");
     String OrderIdGenerator = "create sequence ORDERID_GENERATOR";
 
@@ -52,11 +51,12 @@ public class OrderDatabase implements OrderRepository {
                 "size nvarchar(30) NOT NULL" +
                 ");";
         try{
-            String stringDate = "01/12/1995";
+            String stringDate = "2018/07/10";
             String stringTime = "17:30:20";
             date1 = date.parse(stringDate);
             time1 = time.parse(stringTime);
         }catch(Exception e){
+            throw new NotFoundException("Date is incorrect");
         }
         jdbcTemplate.update(OrderIdGenerator, new MapSqlParameterSource());
         jdbcTemplate.update(createOrderTable, new MapSqlParameterSource());
@@ -89,7 +89,7 @@ public class OrderDatabase implements OrderRepository {
                 .addValue("price", price)
                 .addValue("deliveryDate", deliveryDate)
                 .addValue("deliveryTime", deliveryTime)
-                .addValue("status", status)
+                .addValue("status", "Active")
                 .addValue("note", note)
                 .addValue("size", size);
 
@@ -142,7 +142,8 @@ public class OrderDatabase implements OrderRepository {
 
     @Override
     public Integer getIdOfLast(){
-        String Sql = "SELECT COUNT(OrderId) FROM orders;";
-        return jdbcTemplate.query(Sql, orderExtractor).get(0).getId();
+        String Sql = "SELECT * FROM ORDERS";
+        List<Order> orders = jdbcTemplate.query(Sql, orderExtractor);
+        return orders.size()-1;
     }
 }
