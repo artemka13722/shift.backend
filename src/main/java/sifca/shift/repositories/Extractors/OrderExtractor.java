@@ -1,4 +1,4 @@
-package sifca.shift.repositories;
+package sifca.shift.repositories.Extractors;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -8,8 +8,10 @@ import sifca.shift.models.Order;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,18 +20,21 @@ public class OrderExtractor implements ResultSetExtractor<List<Order>>{
     @Override
     public List<Order> extractData(ResultSet rs) throws SQLException, DataAccessException{
         List<Order> orders = new ArrayList<>();
-        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); // Нужен для парсинга стринга в дату
+        DateFormat date = new SimpleDateFormat("yyyy-MM-dd"); // Нужен для парсинга стринга в дату
+        DateFormat time = new SimpleDateFormat("hh:mm:ss"); // Нужен для парсинга стринга в тайм
 
         while(rs.next()){
             Order order = new Order();
             order.setId(Integer.parseInt(rs.getString("OrderId")));
+            order.setTitle(rs.getString("title"));
             order.setOrderPhone(rs.getString("orderPhone"));
             order.setFromAddress(rs.getString("fromAddress"));
-            order.setToAdress(rs.getString("toAddress"));
+            order.setToAddress(rs.getString("toAddress"));
+            order.setContactPhone(rs.getString("contactPhone"));
             order.setPrice(Integer.parseInt(rs.getString("price")));
             try { // парсинг в дату жалуется, просит обработку экспешенов, без трай-кэтч не будет робить
-                order.setOrderTime(sdf.parse(rs.getString("orderTime")));
-                order.setDeliveryTime(sdf.parse(rs.getString("deliveryTime")));
+                order.setDeliveryDate(date.parse(rs.getString("deliveryDate")));
+                order.setDeliveryTime(time.parse(rs.getString("deliveryTime")));
             }
             catch (Exception e){
                 throw new NotFoundException("Error Order Extractor", 14);

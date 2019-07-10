@@ -11,11 +11,13 @@ public interface UserRepository {
 
     User getOne(String phone);
 
-    User update(String oldPhone, String phone, String name);
+    void update(String oldPhone, String phone, String name);
 
     void delete(String phone);
 
-    User create(String phone, String name);
+    void create(String phone, String name);
 
     List<User> getAll();
+
+    boolean exists(String phone);
 }

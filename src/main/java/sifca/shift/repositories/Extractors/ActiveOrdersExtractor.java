@@ -1,4 +1,4 @@
-package sifca.shift.repositories;
+package sifca.shift.repositories.Extractors;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -17,27 +17,26 @@ import java.util.List;
 public class ActiveOrdersExtractor implements ResultSetExtractor<List<ActiveOrders>>{
     @Override
     public List<ActiveOrders> extractData(ResultSet rs) throws SQLException, DataAccessException{
-        Integer count = -1; // счетчик
         List<ActiveOrders> orders = new ArrayList<>();
-        DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss"); // Нужен для парсинга стринга в дату
-
+        DateFormat date = new SimpleDateFormat("yyyy-MM-dd"); // Нужен для парсинга стринга в дату
+        DateFormat time = new SimpleDateFormat("hh:mm:ss"); // Нужен для парсинга стринга в time
         while(rs.next()){
             ActiveOrders order = new ActiveOrders();
-            order.setOrderPhone(rs.getString("orderPhone"));
-            order.setFromAddress(rs.getString("fromAddress"));
-            order.setToAdress(rs.getString("toAddress"));
+            order.setTitle(rs.getString("title"));
             order.setPrice(Integer.parseInt(rs.getString("price")));
+            order.setSize(rs.getString("size"));
             try { // парсинг в дату жалуется, просит обработку экспешенов, без трай-кэтч не будет робить
-                order.setOrderTime(sdf.parse(rs.getString("orderTime")));
-                order.setDeliveryTime(sdf.parse(rs.getString("deliveryTime")));
+                order.setDeliveryDate(date.parse(rs.getString("deliveryDate")));
+                order.setDeliveryTime(time.parse(rs.getString("deliveryTime")));
             }
             catch (Exception e){
                 throw new NotFoundException("Error ActiveOrders Extractor", 1);
             }
+            order.setFromAddress(rs.getString("fromAddress"));
+            order.setToAddress(rs.getString("toAddress"));
             order.setNote(rs.getString("note"));
-            order.setSize(rs.getString("size"));
-            orders.add(++count, order);
+            orders.add(order);
         }
-        return new ArrayList<>(orders);
+        return orders;
     }
 }

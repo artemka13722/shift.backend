@@ -19,24 +19,26 @@ public class OrderService {
     public List<Order> getAll() { return orderRepository.getAll(); }
 
     public void create(Integer Id,
+                        String title,
+                        String orderPhone,
                         String fromAddress,
-                        String phone,
                         String toAddress,
+                        String contactPhone,
                         Integer price,
-                        Date orderTime,
+                        Date deliveryDate,
                         Date deliveryTime,
-                        String status,
                         String note,
                         String size) {
-        orderRepository.create(Id, phone, fromAddress, toAddress, price, orderTime,
-                deliveryTime, status, note, size);
+        orderRepository.create(Id, title, orderPhone, fromAddress, toAddress, contactPhone, price,
+                deliveryDate, deliveryTime, note, size);
     }
 
     public Order getOrder(Integer orderId) { return orderRepository.getOrder(orderId); }
 
-    public void changeStatus(Integer id, String status) { orderRepository.changeStatus(id, status);}
-
     public Integer getIdOfLast() { return orderRepository.getIdOfLast(); }
 
     public boolean exists(Integer id) { return  orderRepository.exists(id);}
+
+    public void changeStatus(Integer orderId, String status) {
+        orderRepository.changeStatus(orderId, status); }
 }

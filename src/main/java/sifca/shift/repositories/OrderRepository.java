@@ -7,16 +7,17 @@ import java.util.List;
 
 public interface OrderRepository {
 
-    void create(Integer Id,
+    void create(Integer id,
+                 String title,
                  String orderPhone,
                  String fromAddress,
                  String toAddress,
+                 String contactPhone,
                  Integer price,
-                 Date orderTime,
+                 Date deliveryDate,
                  Date deliveryTime,
-                 String status,
-                 String note,
-                 String size
+                 String size,
+                 String note
     );
 
     List<Order> getAll();
@@ -25,7 +26,7 @@ public interface OrderRepository {
 
     boolean exists(Integer id);
 
-    void changeStatus(Integer id, String Status);
+    void changeStatus(Integer id, String status);
 
     Integer getIdOfLast();
 }

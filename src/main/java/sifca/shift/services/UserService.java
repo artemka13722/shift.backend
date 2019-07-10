@@ -21,9 +21,11 @@ public class UserService {
 
     public User getOne(String phone) { return userRepository.getOne(phone); }
 
-    public User update(String oldPhone, String phone, String name)  { return  userRepository.update(oldPhone, phone, name); }
+    public void update(String oldPhone, String phone, String name)  { userRepository.update(oldPhone, phone, name); }
 
     public void delete(String phone){ userRepository.delete(phone);}
 
-    public User create(String phone, String name){ return userRepository.create(phone, name); }
+    public void create(String phone, String name){ userRepository.create(phone, name); }
+
+    public boolean exists(String phone){ return userRepository.exists(phone); }
 }

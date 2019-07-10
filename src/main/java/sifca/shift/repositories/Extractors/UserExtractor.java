@@ -1,4 +1,4 @@
-package sifca.shift.repositories;
+package sifca.shift.repositories.Extractors;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -14,7 +14,6 @@ import java.util.List;
 public class UserExtractor implements ResultSetExtractor<List<User>> {
     @Override
     public List<User> extractData(ResultSet rs) throws SQLException, DataAccessException {
-        Integer count = -1;
         List<User> users = new ArrayList<>();
 
         // считывание из каждого поля пока есть строки в таблице
@@ -22,8 +21,8 @@ public class UserExtractor implements ResultSetExtractor<List<User>> {
             User user = new User();
             user.setName(rs.getString("name"));
             user.setPhone(rs.getString("phone"));
-            users.add(++count, user);
+            users.add(user);
         }
-        return new ArrayList<>(users);
+        return users;
     }
 }

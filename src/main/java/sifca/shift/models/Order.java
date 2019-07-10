@@ -2,11 +2,15 @@ package sifca.shift.models;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import java.sql.Time;
 import java.util.Date;
 
 public class Order {
     @ApiModelProperty(value = "Уникальный идентификатор заказа", required = true)
     private Integer id;
+
+    @ApiModelProperty(value = "Имя заказа", required = true)
+    private String title;
 
     @ApiModelProperty(value = "Номер телефона заказчика")
     private String orderPhone;
@@ -17,16 +21,19 @@ public class Order {
     @ApiModelProperty(value = "Адрес места, куда нужно доставить вещь", required = true)
     private String toAddress;
 
+    @ApiModelProperty(value = "Контактный номер")
+    private String contactPhone;
+
     @ApiModelProperty(value = "Цена заказа", required = true)
     private Integer price;
 
-    @ApiModelProperty(value = "Время и дата заказа", required = true)
-    private Date orderTime;
+    @ApiModelProperty(value = "Дата доставки заказа", required = true)
+    private Date deliveryDate;
 
-    @ApiModelProperty(value = "Время и дата доставки заказа", required = true)
+    @ApiModelProperty(value = "Время доставки заказа", required = true)
     private Date deliveryTime;
 
-    @ApiModelProperty(value = "Время и дата доставки заказа", required = true)
+    @ApiModelProperty(value = "Статус заказа", required = true)
     private String status;
 
     @ApiModelProperty(value = "Примечание", required = true)
@@ -38,16 +45,18 @@ public class Order {
     public Order() {
     }
 
-    public Order(Integer Id, String orderPhone, String fromAddress, String toAddress, Integer price, Date orderTime,
-                 Date deliveryTime, String status, String note, String size) {
-        this.id = Id;
+    public Order(Integer id, String title, String orderPhone, String fromAddress, String toAddress,
+                 String contactPhone, Integer price, Date deliveryDate, Date deliveryTime, String note, String size) {
+        this.id = id;
+        this.title = title;
         this.orderPhone = orderPhone;
         this.fromAddress = fromAddress;
         this.toAddress = toAddress;
+        this.contactPhone = contactPhone;
         this.price = price;
-        this.orderTime = orderTime;
+        this.deliveryDate = deliveryDate;
         this.deliveryTime = deliveryTime;
-        this.status = status;
+        this.status = "Active";
         this.note = note;
         this.size = size;
     }
@@ -60,9 +69,21 @@ public class Order {
         this.id = id;
     }
 
-    public String getOrderPhone() { return orderPhone; }
+    public String getTitle() {
+        return title;
+    }
 
-    public void setOrderPhone(String orderPhone) { this.orderPhone = orderPhone; }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getOrderPhone() {
+        return orderPhone;
+    }
+
+    public void setOrderPhone(String orderPhone) {
+        this.orderPhone = orderPhone;
+    }
 
     public String getFromAddress() {
         return fromAddress;
@@ -76,8 +97,16 @@ public class Order {
         return toAddress;
     }
 
-    public void setToAdress(String toAddress) {
+    public void setToAddress(String toAddress) {
         this.toAddress = toAddress;
+    }
+
+    public String getContactPhone() {
+        return contactPhone;
+    }
+
+    public void setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
     }
 
     public Integer getPrice() {
@@ -88,12 +117,12 @@ public class Order {
         this.price = price;
     }
 
-    public Date getOrderTime() {
-        return orderTime;
+    public Date getDeliveryDate() {
+        return deliveryDate;
     }
 
-    public void setOrderTime(Date orderTime) {
-        this.orderTime = orderTime;
+    public void setDeliveryDate(Date deliveryDate) {
+        this.deliveryDate = deliveryDate;
     }
 
     public Date getDeliveryTime() {
@@ -120,7 +149,11 @@ public class Order {
         this.note = note;
     }
 
-    public String getSize() {return size; }
+    public String getSize() {
+        return size;
+    }
 
-    public void setSize(String size) { this.size = size; }
+    public void setSize(String size) {
+        this.size = size;
+    }
 }

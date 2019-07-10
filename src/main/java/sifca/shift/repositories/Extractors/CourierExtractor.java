@@ -1,4 +1,4 @@
-package sifca.shift.repositories;
+package sifca.shift.repositories.Extractors;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -14,7 +14,6 @@ import java.util.List;
 public class CourierExtractor implements ResultSetExtractor<List<Courier>>{
     @Override
     public List<Courier> extractData(ResultSet rs) throws SQLException, DataAccessException{
-        Integer count = -1;
         List<Courier> couriers = new ArrayList<>();
 
         while (rs.next()){

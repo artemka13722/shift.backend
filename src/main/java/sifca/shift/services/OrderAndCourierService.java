@@ -43,8 +43,8 @@ public class OrderAndCourierService {
         return orderAndCourierRepository.courierExists(orderId);
     }
 
-    public void changeStatus(Integer orderId, String status, String phone){
-        orderAndCourierRepository.changeStatus(orderId, status, phone);
+    public void changeStatus(Integer orderId, String phone){
+        orderAndCourierRepository.changeStatus(orderId, phone);
     }
 
     public List<MyOrders> getMyOrders(String phone){
