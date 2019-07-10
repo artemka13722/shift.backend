@@ -39,7 +39,7 @@ public class OrderAndCourierService {
         return orderAndCourierRepository.isCourier(orderId, phone);
     }
 
-    public boolean CourierExists(Integer orderId){
+    public boolean courierExists(Integer orderId){
         return orderAndCourierRepository.courierExists(orderId);
     }
 
@@ -55,8 +55,8 @@ public class OrderAndCourierService {
         return orderAndCourierRepository.getPhone(Id);
     }
 
-    public List<ActiveOrders> getActiveOrders(){
-        return orderAndCourierRepository.getActiveOrders();
+    public List<ActiveOrders> getActiveOrders(String phone){
+        return orderAndCourierRepository.getActiveOrders(phone);
     }
 
     public String getStatus(Integer orderId, String phone){

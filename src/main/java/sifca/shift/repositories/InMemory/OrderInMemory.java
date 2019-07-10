@@ -51,7 +51,7 @@ public class OrderInMemory implements OrderRepository {
 
     @Override
     public List<Order> getAll(){
-        if(Orders.isEmpty()){
+        if (Orders.isEmpty()){
             throw new NotFoundException("No orders");
         }
         return Orders;
@@ -90,7 +90,7 @@ public class OrderInMemory implements OrderRepository {
                 return order;
             }
         }
-        return null;
+        throw new NotFoundException("Order with the id does not exist");
     }
 
     @Override

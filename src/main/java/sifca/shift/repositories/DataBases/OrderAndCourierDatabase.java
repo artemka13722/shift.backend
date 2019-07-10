@@ -78,15 +78,20 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
                     .addValue("courierPhone", courierPhone);
             jdbcTemplate.update(SqlInsert, param);
         }
+        throw new NotFoundException("The order is already exist or courier for this order is already exist " +
+                "or user with the phone number does not exist");
     }
 
     @Override
     public Courier getCourier(Integer id){
-        String sql = "SELECT * FROM couriers WHERE OrderId = :OrderId;";
-        MapSqlParameterSource param = new MapSqlParameterSource()
-                .addValue("OrderId", id);
-        List<Courier> couriers = jdbcTemplate.query(sql, param, courierExtractor);
-        return couriers.get(0);
+        if (courierExists(id)) {
+            String sql = "SELECT * FROM couriers WHERE OrderId = :OrderId;";
+            MapSqlParameterSource param = new MapSqlParameterSource()
+                    .addValue("OrderId", id);
+            List<Courier> couriers = jdbcTemplate.query(sql, param, courierExtractor);
+            return couriers.get(0);
+        }
+        throw new NotFoundException("Courier with the id does not exist");
     }
 
     @Override
@@ -182,6 +187,8 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
         param = new MapSqlParameterSource()
                 .addValue("phone",phone);
         myOrders.addAll(jdbcTemplate.query(sql, param, myOrdersExtractor));
+        if (myOrders.isEmpty())
+            throw new NotFoundException("No my orders");
         return myOrders;
     }
 
@@ -199,12 +206,15 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     }
 
     @Override
-    public List<ActiveOrders> getActiveOrders(){
+    public List<ActiveOrders> getActiveOrders(String phone){
         List<ActiveOrders> activeOrders = new ArrayList<>();
-        String sql = "SELECT title, price, size, deliveryDate, deliveryTime, fromAddress, " +
-                "toAddress, note FROM Orders " +
-                "WHERE status = 'Active';";
-        activeOrders.addAll(jdbcTemplate.query(sql, activeOrdersExtractor));
+        String sql = "SELECT title, price, size, deliveryDate, deliveryTime, fromAddress, toAddress, note " +
+                "FROM Orders WHERE status = 'Active' AND orders.orderPhone <> :phone;";
+        MapSqlParameterSource param = new MapSqlParameterSource()
+                .addValue("phone", phone);
+        activeOrders.addAll(jdbcTemplate.query(sql, param, activeOrdersExtractor));
+        if (activeOrders.isEmpty())
+            throw new NotFoundException("No active orders");
         return activeOrders;
     }
 

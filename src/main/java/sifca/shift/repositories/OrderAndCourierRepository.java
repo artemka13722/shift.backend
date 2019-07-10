@@ -26,7 +26,7 @@ public interface OrderAndCourierRepository {
 
     String getPhone(Integer Id);
 
-    List<ActiveOrders> getActiveOrders();
+    List<ActiveOrders> getActiveOrders(String phone);
 
     List<Courier> getAll();
 

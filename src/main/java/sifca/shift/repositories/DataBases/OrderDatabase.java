@@ -60,7 +60,7 @@ public class OrderDatabase implements OrderRepository {
         }
         jdbcTemplate.update(OrderIdGenerator, new MapSqlParameterSource());
         jdbcTemplate.update(createOrderTable, new MapSqlParameterSource());
-        create(null, "BULKA", "89135890000", "dwadaw", "dwadaw", "89135890000", 100, date1, time1, "Processing", "dwaaw", "dwad");
+        //create(null, "BULKA", "89135890000", "dwadaw", "dwadaw", "89135890000", 100, date1, time1, "Processing", "dwaaw", "dwad");
     }
 
     @Override

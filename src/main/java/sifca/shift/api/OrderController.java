@@ -83,9 +83,9 @@ public class OrderController {
     @ApiOperation(value = "Получение всех активных заказов/" +
             "Getting all active orders")
     public ResponseEntity<List<ActiveOrders>> getActiveOrders(
-    ) {
-        List<ActiveOrders> orders = orderAndCourierService.getActiveOrders();
-        if(orders.isEmpty())
+            @RequestParam(value = "phone", required = true) String phone) {
+        List<ActiveOrders> orders = orderAndCourierService.getActiveOrders(phone);
+        if( orders.isEmpty())
             throw new NotFoundException("No orders");
         return ResponseEntity.ok(orders);
     }

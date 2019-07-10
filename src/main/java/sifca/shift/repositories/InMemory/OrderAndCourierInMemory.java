@@ -137,7 +137,6 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
     @Override
     public List<MyOrders> getMyOrders(String phone){
         List<MyOrders> myOrders = new ArrayList<>();
-
         Integer index;
         Integer count = -1;
         for(index = 0 ; orderService.exists(index); ++index){
@@ -158,6 +157,8 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
                         order.getOrderPhone(), order.getContactPhone(), order.getNote(), 1));
             }
         }
+        if (myOrders.isEmpty())
+            throw new NotFoundException("No my orders");
         return myOrders;
     }
 
@@ -174,16 +175,18 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
     }
 
     @Override
-    public List<ActiveOrders> getActiveOrders(){
+    public List<ActiveOrders> getActiveOrders(String phone){
         Integer count = -1;
         for (Integer index = 0; orderService.exists(index); ++index){
             Order order = orderService.getOrder(index);
-            if (order.getStatus().equals("Active")){
+            if (order.getStatus().equals("Active") && !order.getOrderPhone().equals(phone)){
                 orders.add(++count, new ActiveOrders(order.getTitle(), order.getPrice(), order.getSize(),
                         order.getDeliveryDate(), order.getDeliveryTime(), order.getFromAddress(),
                         order.getToAddress(), order.getNote()));
             }
         }
+        if (count == -1)
+            throw new NotFoundException("No active orders");
         return orders;
     }
 
