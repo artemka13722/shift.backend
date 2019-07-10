@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@Api(description = "Запросы на работу с заказами")
+@Api(description = "Запросы на работу с заказами/Queries for work with orders")
 public class OrderController {
     @Autowired
     private OrderService orderService;
@@ -29,41 +29,46 @@ public class OrderController {
 
 
     @PostMapping(_PATH + "add/order")
-    @ApiOperation(value = "Оформление заказа")
+    @ApiOperation(value = "Оформление заказа/Placing new order")
     public ResponseEntity<Integer> createOrder(
-            @ApiParam(value = "Данные для добавления нового заказа")
+            @ApiParam(value = "Данные для добавления нового заказа/" +
+                    "Data for adding new order")
             @RequestBody Order order) {
-        orderService.create(orderService.getIdOfLast(), order.getOrderPhone(), order.getFromAddress(), order.getToAddress(),
-                order.getPrice(), order.getOrderTime(),order.getDeliveryTime(),
+        orderService.create(orderService.getIdOfLast(), order.getTitle(),order.getOrderPhone(), order.getFromAddress(),
+                order.getToAddress(), order.getContactPhone(), order.getPrice(), order.getDeliveryTime(),
                 order.getStatus(), order.getNote(), order.getSize());
         return ResponseEntity.ok(orderService.getIdOfLast());
     }
 
     @PostMapping(_PATH + "add/courier")
-    @ApiOperation(value = "Принятие заказа")
+    @ApiOperation(value = "Принятие заказа/Taking a order")
     public ResponseEntity<?> createCourier(
-            @ApiParam(value = "Данные для добавления принятого оформленного заказа")
+            @ApiParam(value = "Данные для добавления принятого оформленного заказа/" +
+                    "Data for taking the order")
             @RequestBody Courier courier) {
         orderAndCourierService.create(courier.orderId, courier.courierPhone, "Processing");
         return ResponseEntity.ok().build();
     }
 
     @GetMapping(_PATH + "get/orders")
-    @ApiOperation(value = "Получение всех заказов со стороны заказчика")
+    @ApiOperation(value = "Получение всех заказов со стороны заказчика/" +
+            "Getting all orders")
     public ResponseEntity<List<Order>> getAllOrders(){
         List<Order> orders = orderService.getAll();
         return ResponseEntity.ok(orders);
     }
 
     @GetMapping(_PATH + "get/couriers")
-    @ApiOperation(value = "Получение всех объявлений о заказах")
+    @ApiOperation(value = "Получение всех объявлений о заказах/" +
+            "Getting all taking orders")
     public ResponseEntity<List<Courier>> getAllCouriers(){
         List<Courier> couriers = orderAndCourierService.getAll();
         return ResponseEntity.ok(couriers);
     }
 
     @GetMapping(_PATH + "get/active-orders")
-    @ApiOperation(value = "Получение всех курьерских заказов")
+    @ApiOperation(value = "Получение всех активных заказов/" +
+            "Getting all active orders")
     public ResponseEntity<List<ActiveOrders>> getActiveOrders(
     ) {
         List<ActiveOrders> orders = orderAndCourierService.getActiveOrders();
@@ -73,7 +78,8 @@ public class OrderController {
     }
 
     @GetMapping(_PATH + "get/my-orders")
-    @ApiOperation(value = "Получение всех заказов, связанных с переданным номер телефона. ")
+    @ApiOperation(value = "Получение всех заказов, связанных с переданным номером телефона/" +
+            "Getting my orders")
     public ResponseEntity<List<MyOrders>> getMyOrders(
             @RequestParam(value = "phone", required = true) String phone
     ) {
@@ -82,20 +88,23 @@ public class OrderController {
     }
 
     @GetMapping(_PATH + "get/status")
-    @ApiOperation(value = "Получение статуса заказа по номеру и orderId заказа")
+    @ApiOperation(value = "Получение статуса заказа по номеру и orderId заказа/" +
+            "Getting status of order by phone number and OrderId")
     public ResponseEntity<String> getStatus(
             @RequestBody Courier courier){
         String result = orderAndCourierService.getStatus(courier.orderId, courier.getCourierPhone());
         return ResponseEntity.ok(result);
     }
 
-
-    @PatchMapping(_PATH + "change/status")
-    @ApiOperation(value = "Изменение статута заказа от заказчика")
+    ///
+    @PatchMapping(_PATH + "close")
+    @ApiOperation(value = "Закрытие заказа/" +
+            "Closing the order")
     public  ResponseEntity<?> ChangeStatus(
-            @ApiParam(value = "Данные для изменения статуса")
+            @ApiParam(value = "Данные для изменения статуса/" +
+                    "Data for changing status")
             @RequestBody Courier courier) {
-        orderAndCourierService.changeStatus(courier.orderId, courier.status, courier.getCourierPhone());
+        orderAndCourierService.changeStatus(courier.orderId, courier.getCourierPhone());
         return ResponseEntity.ok().build();
     }
 }

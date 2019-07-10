@@ -1,10 +1,11 @@
-package sifca.shift.repositories;
+package sifca.shift.repositories.InMemory;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import sifca.shift.exception.NotFoundException;
 import sifca.shift.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import sifca.shift.repositories.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @Repository
 @ConditionalOnProperty(name = "use.database", havingValue = "false")
-public class UserInMemory implements UserRepository{
+public class UserInMemory implements UserRepository {
 
     private Integer count = -1;
     private List<User> Users = new ArrayList<>();
@@ -39,21 +40,24 @@ public class UserInMemory implements UserRepository{
 
     @Override
     public User getOne(String phone){
-        for (User user : Users){
-            if (user.phone.equals(phone))
-                return user;
+        if (exists(phone)) {
+            for (User user : Users) {
+                if (user.phone.equals(phone))
+                    return user;
+            }
         }
         throw new NotFoundException();
     }
 
     @Override
-    public User update(String oldPhone, String phone, String name){
-        for (User user : Users){
-            if (user.phone.equals(oldPhone))
-            {
-                user.phone = phone;
-                user.name = name;
-                return user;
+    public void update(String oldPhone, String phone, String name){
+        if (!exists(phone) && exists(oldPhone)) {
+            for (User user : Users) {
+                if (user.phone.equals(oldPhone)) {
+                    user.phone = phone;
+                    user.name = name;
+                    break;
+                }
             }
         }
         throw new NotFoundException();
@@ -61,29 +65,36 @@ public class UserInMemory implements UserRepository{
 
     @Override
     public void delete(String phone){
-        boolean key = false;
-        User deletingUser = null;
-        for (User user : Users){
-            if (user.phone.equals(phone))
-            {
-                key = true;
-                deletingUser = user;
-                break;
+        if (exists(phone)) {
+            User delUser = new User();
+            for (User user : Users) {
+                if (user.phone.equals(phone)) {
+                    delUser = user;
+                    break;
+                }
             }
+            Users.remove(delUser);
         }
-
-        if (!key)
-            throw new NotFoundException();
-        else
-        {
-            --count;
-            Users.remove(deletingUser);
-        }
+        throw new NotFoundException();
     }
 
     @Override
-    public User create(String phone, String name){
-        Users.add(++count, new User(phone, name));
-        return Users.get(count);
+    public void create(String phone, String name){
+        if (!exists(phone)) {
+            Users.add(++count, new User(phone, name));
+        }
+        throw new NotFoundException();
+    }
+
+    @Override
+    public boolean exists(String phone){
+        if (!Users.isEmpty()){
+            for (User user: Users){
+                if (user.phone.equals(phone))
+                    return true;
+            }
+            return false;
+        }
+        throw new NotFoundException();
     }
 }

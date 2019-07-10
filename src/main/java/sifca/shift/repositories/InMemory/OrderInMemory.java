@@ -1,10 +1,12 @@
-package sifca.shift.repositories;
+package sifca.shift.repositories.InMemory;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import sifca.shift.exception.NotFoundException;
 import sifca.shift.models.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import sifca.shift.repositories.OrderRepository;
+import sifca.shift.services.UserService;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -14,11 +16,14 @@ import java.util.List;
 
 @Repository
 @ConditionalOnProperty(name = "use.database", havingValue = "false")
-public class OrderInMemory implements OrderRepository{
+public class OrderInMemory implements OrderRepository {
     private Integer count = -1;
     Date date1, date2;
     public  List<Order> Orders = new ArrayList<>();
     DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     public OrderInMemory(){
@@ -29,11 +34,10 @@ public class OrderInMemory implements OrderRepository{
             date2 = sdf.parse(stringDate2);
         }catch(Exception e){
         }
-        Orders.add(++count, new Order(count, "89130000000", "from", "to", 200, date1, date2, "Processing", "lala", "small"));
-        Orders.add(++count, new Order(count, "89131111111", "from", "to", 300, date1, date2, "Active", "lala", "small"));
+        Orders.add(++count, new Order(count, "UUU", "89130000000", "from", "to", "89130000000", 200, date1, "Processing", "lala", "small"));
+        Orders.add(++count, new Order(count, "BUU", "89131111111", "from", "to", "89131111111", 300, date2, "Active", "lala", "small"));
     }
 
-    // HAVE
     @Override
     public List<Order> getAll(){
         if(Orders.isEmpty()){
@@ -42,22 +46,25 @@ public class OrderInMemory implements OrderRepository{
         return Orders;
     }
 
-    // HAVE
     @Override
     public void create(Integer Id,
+                        String title,
                         String orderPhone,
                         String fromAddress,
                         String toAddress,
+                        String contactPhone,
                         Integer price,
-                        Date orderTime,
                         Date deliveryTime,
                         String status,
                         String note,
                         String size){
-        Order order = new Order(count, orderPhone, fromAddress, toAddress, price, orderTime,
-                deliveryTime, status, note, size);
-        order.setStatus("Active");
-        Orders.add(++count, order);
+        if (!exists(Id) || !userService.exists(orderPhone)) {
+            Order order = new Order(count, title, orderPhone, fromAddress, toAddress, contactPhone, price,
+                    deliveryTime, status, note, size);
+            order.setStatus("Active");
+            Orders.add(++count, order);
+        }
+        throw new NotFoundException();
     }
 
     @Override
@@ -88,8 +95,12 @@ public class OrderInMemory implements OrderRepository{
     @Override
     public void changeStatus(Integer id, String status)
     {
-        Order order = getOrder(id);
-        order.setStatus(status);
-        Orders.set(id, order);
+        if (exists(id)) {
+            Order order = getOrder(id);
+            order.setStatus(status);
+            Orders.set(id, order);
+        }
+        else
+            throw new NotFoundException();
     }
 }

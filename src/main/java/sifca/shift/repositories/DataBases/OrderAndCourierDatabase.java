@@ -1,4 +1,4 @@
-package sifca.shift.repositories;
+package sifca.shift.repositories.DataBases;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -10,7 +10,13 @@ import sifca.shift.models.Courier;
 import sifca.shift.models.Order;
 import sifca.shift.models.ActiveOrders;
 import sifca.shift.models.MyOrders;
+import sifca.shift.repositories.Extractors.ActiveOrdersExtractor;
+import sifca.shift.repositories.Extractors.CourierExtractor;
+import sifca.shift.repositories.Extractors.MyOrdersExtractor;
+import sifca.shift.repositories.Extractors.OrderExtractor;
+import sifca.shift.repositories.OrderAndCourierRepository;
 import sifca.shift.services.OrderService;
+import sifca.shift.services.UserService;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -18,17 +24,15 @@ import java.util.List;
 
 @Repository
 @ConditionalOnProperty(name = "use.database", havingValue = "true")
-public class OrderAndCourierDatabase implements OrderAndCourierRepository{
+public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
 
-    List<Courier> couriers = new ArrayList<>();
-    private Integer count = -1;
+    @Autowired
+    UserService userService;
 
     @Autowired
     OrderService orderService;
-
-    List<ActiveOrders> orders = new ArrayList<>();
 
     @Autowired
     private CourierExtractor courierExtractor;
@@ -42,15 +46,19 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository{
     @Autowired
     private ActiveOrdersExtractor activeOrdersExtractor;
 
+    List<ActiveOrders> orders = new ArrayList<>();
+
+    List<Courier> couriers = new ArrayList<>();
+
     @PostConstruct
     public void initialize(){
         String createTable = "CREATE TABLE IF NOT EXISTS Couriers(" +
                 "OrderId int NOT NULL," +
                 "CourierPhone nvarchar(11) NOT NULL," +
-                "Status varchar(15) NOT NULL CHECK(Status IN('Done', 'Failed', 'Processing', 'Waiting', 'Closed'))" +
+                "Status varchar(15) NOT NULL CHECK(Status IN('Done', 'Failed', 'Processing', 'Closed'))" +
                 ");";
         jdbcTemplate.update(createTable, new MapSqlParameterSource());
-        create(1, "89135895600", "Processing");
+        //create(1, "89135895600", "Processing");
     }
 
     @Override
@@ -67,7 +75,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository{
 
     @Override
     public void create(Integer orderId, String courierPhone, String Status){
-        if (existAndActive(orderId) && !courierExists(orderId)){
+        if (existAndActive(orderId) && !courierExists(orderId) && userService.exists(courierPhone)){
             String SqlInsert = "INSERT INTO Couriers VALUES(:orderId, :courierPhone,:Status);";
             MapSqlParameterSource param = new MapSqlParameterSource()
                     .addValue("orderId", orderId)
@@ -133,36 +141,32 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository{
 
     // CHANGE, try to make this more easy and clearer
     @Override
-    public void changeStatus(Integer OrderId, String Status, String phone) {
-        if ((!isCustomer(OrderId, phone) && !isCourier(OrderId, phone)          // Если это не заказчик, и не курьер или
-                || (!Status.equals("Closed") &&
-                Status.equals("Done"))))                           // запрос не на отмену или закрытие заказа
-            throw new NotFoundException();                                      // вернуть ошибку
-        else {
-            if (Status.equals("Closed") && isCustomer(OrderId, phone)) {                  // Если запрос на отмену, и это заказчик
-                if (!courierExists(OrderId)) {                                  // Если у заказа есть курьер
-                    String sql = "UPDATE couriers SET status = :status" +
-                            "WHERE OrderId = :OrderId;";
-                    MapSqlParameterSource param = new MapSqlParameterSource()
-                            .addValue("OrderId", OrderId)
-                            .addValue("status", Status);
-                    jdbcTemplate.update(sql, param);
-                }
-                orderService.changeStatus(OrderId, Status);          // Меняем статус заказа на отмененный
-            } else {                                            // Если это курьер
-                if (Status.equals("Done")) {                            // Если запрос на закрытие
-                    orderService.changeStatus(OrderId, Status);      // Закрытие заказа со стороны заказчика
-                } else {                                      // Если запрос на отмену
-                    orderService.changeStatus(OrderId, "Active");         // Статус заказа меняется на активный
-                    String sql = "UPDATE couriers SET status = :status" +
-                            "WHERE OrderId = :OrderId;";
-                    MapSqlParameterSource param = new MapSqlParameterSource()
-                            .addValue("OrderId", OrderId)
-                            .addValue("status", Status);
-                    jdbcTemplate.update(sql, param);                // Закрытие заказа со стороны курьера
-                }
-            }
-        }
+    public void changeStatus(Integer orderId, String phone) {
+       if (orderService.exists(orderId)){
+           if (isCustomer(orderId, phone)){
+               if (orderService.getOrder(orderId).getStatus().equals("Active")
+               || orderService.getOrder(orderId).getStatus().equals("Processing")){
+                   if (courierExists(orderId)){
+                       String sql = "UPDATE couriers SET status = :status;";
+                       MapSqlParameterSource param = new MapSqlParameterSource()
+                               .addValue("status", "Closed");
+                       jdbcTemplate.update(sql, param);
+                   }
+               }
+           }
+           else
+           {
+               if (getCourier(orderId).getStatus().equals("Processing")){
+                   orderService.changeStatus(orderId, "Active");
+                   String sql = "UPDATE couriers SET status = :status;";
+                   MapSqlParameterSource param = new MapSqlParameterSource()
+                           .addValue("status", "Closed");
+                   jdbcTemplate.update(sql, param);
+               }
+           }
+       }
+       else
+           throw new NotFoundException();
     }
 
     @Override
@@ -204,7 +208,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository{
         List<ActiveOrders> activeOrders = new ArrayList<>();
         String sql = "SELECT orderPhone, fromAddress, toAddress, price, orderTime," +
                 " deliveryTime, note, size FROM Orders " +
-                "WHERE status = 'A';";
+                "WHERE status = 'Active';";
         activeOrders.addAll(jdbcTemplate.query(sql, activeOrdersExtractor));
         return activeOrders;
     }

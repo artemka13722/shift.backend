@@ -1,5 +1,6 @@
-package sifca.shift.repositories;
+package sifca.shift.repositories.InMemory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import sifca.shift.exception.NotFoundException;
 import sifca.shift.models.ActiveOrders;
 import sifca.shift.models.Courier;
@@ -7,6 +8,9 @@ import sifca.shift.models.MyOrders;
 import sifca.shift.models.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import sifca.shift.repositories.OrderAndCourierRepository;
+import sifca.shift.services.OrderService;
+import sifca.shift.services.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +20,13 @@ import java.util.List;
 public class OrderAndCourierInMemory implements OrderAndCourierRepository {
     List<Courier> couriers = new ArrayList<>();
     private Integer count = -1;
+
     @Autowired
-    OrderInMemory orderInMemory = new OrderInMemory();
+    OrderService orderService;
+
+    @Autowired
+    UserService userService;
+
     List<ActiveOrders> orders = new ArrayList<>();
 
     @Autowired
@@ -28,10 +37,10 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
 
     @Override
     public void create(Integer orderId, String courierPhone, String Status){
-        if (existAndActive(orderId)){
+        if (existAndActive(orderId) && !courierExists(orderId) && userService.exists(courierPhone)){
             Courier courier = new Courier(orderId, courierPhone, Status);
             couriers.add(++count, courier);
-            orderInMemory.changeStatus(orderId, "Processing");
+            orderService.changeStatus(orderId, "Processing");
         }
         else
             throw new NotFoundException();
@@ -40,8 +49,8 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
     @Override
     public boolean existAndActive(Integer id)
     {
-        if (orderInMemory.exists(id)){
-            Order order = orderInMemory.getOrder(id);
+        if (orderService.exists(id)){
+            Order order = orderService.getOrder(id);
             if (order.getStatus().equals("Active")){
                 return true;
             }
@@ -63,8 +72,8 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
 
     @Override
     public boolean isCustomer(Integer id, String phone){
-        if (orderInMemory.exists(id)){
-            Order order = orderInMemory.getOrder(id);
+        if (orderService.exists(id)){
+            Order order = orderService.getOrder(id);
             Courier courier = getCourier(id);
             if (!phone.equals(courier.getCourierPhone()) && phone.equals(order.getOrderPhone())) {
                 return true;
@@ -77,8 +86,8 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
 
     @Override
     public boolean isCourier(Integer id, String phone){
-        if (orderInMemory.exists(id)){
-            Order order = orderInMemory.getOrder(id);
+        if (orderService.exists(id)){
+            Order order = orderService.getOrder(id);
             Courier courier = getCourier(id);
             if (phone.equals(courier.getCourierPhone()) && !phone.equals(order.getOrderPhone())){
                 return true;
@@ -101,33 +110,31 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
 
     /// CHANGE, try to make this more easy and clearer
     @Override
-    public void changeStatus(Integer id, String Status, String phone) {
-        if ((!isCustomer(id, phone) && !isCourier(id, phone)    // Если это не заказчик, и не курьер или
-                || (!Status.equals("Closed") &&
-                !Status.equals("Done"))))                       // запрос не на отмену или закрытие заказа
-            throw new NotFoundException();                      // вернуть ошибку
-        else {
-            if (Status.equals("Closed") &&
-                    isCustomer(id, phone)) {                    // Если запрос на отмену, и это заказчик
-                if (!courierExists(id)) {                       // Если у заказа есть курьер
-                    Courier courier = getCourier(id);           // Получаем этого курьера
-                    courier.status = Status;                    // Присваиваем ему переданный статус
-                    couriers.set(id, courier);                  // меняем данные в List
+    public void changeStatus(Integer id, String phone) {
+        if (orderService.exists(id)) {
+            if (isCustomer(id, phone)) {
+                if (orderService.getOrder(id).getStatus().equals("Active")
+                        || orderService.getOrder(id).getStatus().equals("Processing")) {
+                    if (courierExists(id)) {
+                        Courier courier = getCourier(id);
+                        courier.setStatus("Closed");
+                        couriers.set(id, courier);
+                    }
+                    orderService.changeStatus(id, "Closed");
                 }
-                orderInMemory.changeStatus(id, Status);          // Меняем статус заказа на отмененный
-            } else {                                            // Если это курьер
-                if (Status.equals("Done")) {                            // Если запрос на закрытие
-                    orderInMemory.changeStatus(id, Status);      // Закрытие заказа со стороны заказчика
-                }
-                else {                                          // Если запрос на отмену
-                    orderInMemory.changeStatus(id, "Active");         // Статус заказа меняется на активный
-                   // changeStatus(orderId, status, phone);            // Закрытие заказа со стороны курьера
-                    Courier courier = getCourier(id);           // Получаем этого курьера
-                    courier.status = Status;                    // Присваиваем ему переданный статус
+            }
+            else
+            {
+                if (getCourier(id).getStatus().equals("Processing")){
+                    orderService.changeStatus(id, "Active");
+                    Courier courier = getCourier(id);
+                    courier.setStatus("Closed");
                     couriers.set(id, courier);
                 }
             }
         }
+        else
+            throw new NotFoundException();
     }
 
     @Override
@@ -136,21 +143,21 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
 
         Integer index;
         Integer count = -1;
-        for(index = 0 ; orderInMemory.exists(index); ++index){
+        for(index = 0 ; orderService.exists(index); ++index){
             if (isCustomer(index, phone)){
 
-                Order order = orderInMemory.getOrder(index);
+                Order order = orderService.getOrder(index);
                 myOrders.add(++count, new MyOrders(
-                        order.getOrderPhone(), order.getFromAddress(),
-                        order.getToAddress(), order.getPrice(), order.getOrderTime(), order.getDeliveryTime(), 0,
+                        order.getTitle(), order.getOrderPhone(), order.getFromAddress(),
+                        order.getToAddress(), order.getPrice(),, order.getDeliveryTime(), 0,
                         order.getNote(), order.getSize(), order.getStatus()));
             }
             if (isCourier(index, phone)){
 
-                Order order = orderInMemory.getOrder(index);
+                Order order = orderService.getOrder(index);
                 myOrders.add(++count, new MyOrders(
                         getPhone(index), order.getFromAddress(),
-                        order.getToAddress(), order.getPrice(), order.getOrderTime(), order.getDeliveryTime(), 1,
+                        order.getToAddress(), order.getPrice(), order.getDeliveryTime(), 1,
                         order.getNote(), order.getSize(), order.getStatus()));
             }
         }
@@ -172,8 +179,8 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
     @Override
     public List<ActiveOrders> getActiveOrders(){
         Integer count = -1;
-        for (Integer index = 0; orderInMemory.exists(index); ++index){
-            Order order = orderInMemory.getOrder(index);
+        for (Integer index = 0; orderService.exists(index); ++index){
+            Order order = orderService.getOrder(index);
             if (order.getStatus().equals("Active")){
                 orders.add(++count, new ActiveOrders(order.getOrderPhone(), order.getFromAddress(), order.getToAddress(),
                         order.getPrice(), order.getOrderTime(), order.getDeliveryTime(),
@@ -194,7 +201,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
     @Override
     public String getStatus(Integer orderId, String phone){
         if (isCustomer(orderId, phone)){
-            return orderInMemory.getOrder(orderId).getStatus();
+            return orderService.getOrder(orderId).getStatus();
         }
         if (isCourier(orderId, phone)){
             return getCourier(orderId).getStatus();
