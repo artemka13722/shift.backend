@@ -26,7 +26,7 @@ public class OrderDatabase implements OrderRepository {
     private NamedParameterJdbcTemplate jdbcTemplate;
 
     Date date1, time1;
-    DateFormat date = new SimpleDateFormat("yyyy/MM/dd");
+    DateFormat date = new SimpleDateFormat("yyyy-MM-dd");
     DateFormat time = new SimpleDateFormat("hh:mm:ss");
     String OrderIdGenerator = "create sequence ORDERID_GENERATOR";
 
@@ -43,15 +43,15 @@ public class OrderDatabase implements OrderRepository {
                 "toAddress nvarchar(150) NOT NULL," +
                 "contactPhone varchar(11) NOT NULL," +
                 "price int NOT NULL," +
-                "deliveryDate DateTime NOT NULL," +
-                "deliveryTime DateTime NOT NULL," +
+                "deliveryDate Date NOT NULL," +
+                "deliveryTime Time NOT NULL," +
                 "status nvarchar(15) NOT NULL CHECK(status IN('Active', 'Done', " +
                 "'Processing', 'Closed'))," +
                 "note nvarchar(255)," +
                 "size nvarchar(30) NOT NULL" +
                 ");";
         try{
-            String stringDate = "2018/07/10";
+            String stringDate = "2018-07-10";
             String stringTime = "17:30:20";
             date1 = date.parse(stringDate);
             time1 = time.parse(stringTime);
@@ -99,7 +99,10 @@ public class OrderDatabase implements OrderRepository {
     @Override
     public List<Order> getAll(){
         String sqlGetAll = "SELECT * FROM orders;";
-        return jdbcTemplate.query(sqlGetAll, orderExtractor);
+        List<Order> orders = jdbcTemplate.query(sqlGetAll, orderExtractor);
+        if (orders.isEmpty())
+            throw new NotFoundException("No orders");
+        return orders;
     }
 
     @Override

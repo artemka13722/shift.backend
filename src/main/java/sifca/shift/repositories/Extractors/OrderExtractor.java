@@ -20,7 +20,7 @@ public class OrderExtractor implements ResultSetExtractor<List<Order>>{
     @Override
     public List<Order> extractData(ResultSet rs) throws SQLException, DataAccessException{
         List<Order> orders = new ArrayList<>();
-        DateFormat date = new SimpleDateFormat("yyyy/MM/dd");
+        DateFormat date = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat time = new SimpleDateFormat("hh:mm:ss");
 
         while(rs.next()){
