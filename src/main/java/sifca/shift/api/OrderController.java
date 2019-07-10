@@ -2,11 +2,8 @@ package sifca.shift.api;
 
 
 import sifca.shift.exception.NotFoundException;
-import sifca.shift.models.Order;
+import sifca.shift.models.*;
 import sifca.shift.services.OrderService;
-import sifca.shift.models.Courier;
-import sifca.shift.models.ActiveOrders;
-import sifca.shift.models.MyOrders;
 import sifca.shift.services.OrderAndCourierService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,9 +31,9 @@ public class OrderController {
             @ApiParam(value = "Данные для добавления нового заказа/" +
                     "Data for adding new order")
             @RequestBody Order order) {
-        orderService.create(orderService.getIdOfLast(), order.getTitle(),order.getOrderPhone(), order.getFromAddress(),
-                order.getToAddress(), order.getContactPhone(), order.getPrice(), order.getDeliveryTime(),
-                order.getStatus(), order.getNote(), order.getSize());
+        orderService.create(null, order.getTitle(), order.getOrderPhone(), order.getFromAddress(),
+                order.getToAddress(), order.getContactPhone(), order.getPrice(), order.getDeliveryDate(),
+                order.getDeliveryTime(), order.getNote(), order.getSize());
         return ResponseEntity.ok(orderService.getIdOfLast());
     }
 
@@ -45,8 +42,8 @@ public class OrderController {
     public ResponseEntity<?> createCourier(
             @ApiParam(value = "Данные для добавления принятого оформленного заказа/" +
                     "Data for taking the order")
-            @RequestBody Courier courier) {
-        orderAndCourierService.create(courier.orderId, courier.courierPhone, "Processing");
+            @RequestBody Id_phone body) {
+        orderAndCourierService.create(body.getId(), body.getPhone(), "Processing");
         return ResponseEntity.ok().build();
     }
 
@@ -91,20 +88,19 @@ public class OrderController {
     @ApiOperation(value = "Получение статуса заказа по номеру и orderId заказа/" +
             "Getting status of order by phone number and OrderId")
     public ResponseEntity<String> getStatus(
-            @RequestBody Courier courier){
-        String result = orderAndCourierService.getStatus(courier.orderId, courier.getCourierPhone());
+            @RequestBody Id_phone body){
+        String result = orderAndCourierService.getStatus(body.getId(), body.getPhone());
         return ResponseEntity.ok(result);
     }
 
-    ///
     @PatchMapping(_PATH + "close")
     @ApiOperation(value = "Закрытие заказа/" +
             "Closing the order")
     public  ResponseEntity<?> ChangeStatus(
             @ApiParam(value = "Данные для изменения статуса/" +
                     "Data for changing status")
-            @RequestBody Courier courier) {
-        orderAndCourierService.changeStatus(courier.orderId, courier.getCourierPhone());
+            @RequestBody Id_phone body) {
+        orderAndCourierService.changeStatus(body.getId(), body.getPhone());
         return ResponseEntity.ok().build();
     }
 }

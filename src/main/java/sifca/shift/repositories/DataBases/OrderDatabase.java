@@ -37,14 +37,15 @@ public class OrderDatabase implements OrderRepository {
     public void initialize(){
         String createOrderTable = "CREATE TABLE IF NOT EXISTS orders ("+
                 "OrderId int default OrderId_GENERATOR.nextval," +
+                "Title nvarchar(20) NOT NULL," +
                 "orderPhone varchar(11) NOT NULL," +
                 "fromAddress nvarchar(150) NOT NULL," +
                 "toAddress nvarchar(150) NOT NULL," +
                 "contactPhone varchar(11) NOT NULL," +
                 "price int NOT NULL," +
-                "orderTime DateTime NOT NULL," +
+                "deliveryDate DateTime NOT NULL," +
                 "deliveryTime DateTime NOT NULL," +
-                "status nvarchar(15) NOT NULL CHECK(status IN('Active','Done', 'Failed', " +
+                "status nvarchar(15) NOT NULL CHECK(status IN('Active', 'Done', " +
                 "'Processing', 'Closed'))," +
                 "note nvarchar(255)," +
                 "size nvarchar(30) NOT NULL" +
@@ -56,24 +57,24 @@ public class OrderDatabase implements OrderRepository {
         }
         jdbcTemplate.update(OrderIdGenerator, new MapSqlParameterSource());
         jdbcTemplate.update(createOrderTable, new MapSqlParameterSource());
-        create(null, "BULKA", "89135890000", "dwadaw", "dwadaw", "89135890000", 100, date2, "Active", "dwaaw", "dwad");
+        //create(null, "BULKA", "89135890000", "dwadaw", "dwadaw", "89135890000", 100, date2, "Active", "dwaaw", "dwad");
     }
 
     @Override
-    public void create(Integer Id,
+    public void create(Integer id,
                        String title,
                        String orderPhone,
                        String fromAddress,
                        String toAddress,
                        String contactPhone,
                        Integer price,
+                       Date deliveryDate,
                        Date deliveryTime,
-                       String status,
                        String note,
                        String size){
         String SQLinsert = "INSERT INTO orders VALUES(:title, :orderPhone, " +
                 ":fromAddress, :toAddress, :contactPhone :price, " +
-                ":deliveryTime, :status, :note, :size);";
+                ":deliveryDate, :deliveryTime, :status, :note, :size);";
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("title", title)
                 .addValue("orderPhone", orderPhone)
@@ -81,8 +82,9 @@ public class OrderDatabase implements OrderRepository {
                 .addValue("toAddress", toAddress)
                 .addValue("contactPhone", contactPhone)
                 .addValue("price", price)
+                .addValue("deliveryDate", deliveryDate)
                 .addValue("deliveryTime", deliveryTime)
-                .addValue("status", status)
+                .addValue("status", "Active")
                 .addValue("note", note)
                 .addValue("size", size);
 

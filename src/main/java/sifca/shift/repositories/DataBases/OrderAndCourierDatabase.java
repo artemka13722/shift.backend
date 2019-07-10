@@ -55,7 +55,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
         String createTable = "CREATE TABLE IF NOT EXISTS Couriers(" +
                 "OrderId int NOT NULL," +
                 "CourierPhone nvarchar(11) NOT NULL," +
-                "Status varchar(15) NOT NULL CHECK(Status IN('Done', 'Failed', 'Processing', 'Closed'))" +
+                "Status varchar(15) NOT NULL CHECK(Status IN('Done', 'Processing', 'Closed'))" +
                 ");";
         jdbcTemplate.update(createTable, new MapSqlParameterSource());
         //create(1, "89135895600", "Processing");

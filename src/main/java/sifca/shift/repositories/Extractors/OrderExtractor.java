@@ -25,7 +25,7 @@ public class OrderExtractor implements ResultSetExtractor<List<Order>>{
 
         while(rs.next()){
             Order order = new Order();
-            order.setId(Integer.parseInt(rs.getString("Id")));
+            order.setId(Integer.parseInt(rs.getString("OrderId")));
             order.setTitle(rs.getString("title"));
             order.setOrderPhone(rs.getString("orderPhone"));
             order.setFromAddress(rs.getString("fromAddress"));

@@ -148,17 +148,17 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
 
                 Order order = orderService.getOrder(index);
                 myOrders.add(++count, new MyOrders(
-                        order.getTitle(), order.getOrderPhone(), order.getFromAddress(),
-                        order.getToAddress(), order.getPrice(),, order.getDeliveryTime(), 0,
-                        order.getNote(), order.getSize(), order.getStatus()));
+                        order.getId(), order.getTitle(), order.getStatus(), order.getPrice(),order.getSize(),
+                        order.getDeliveryDate(), order.getDeliveryTime(), order.getFromAddress(), order.getToAddress(),
+                        order.getOrderPhone(), order.getContactPhone(), order.getNote(), 0));
             }
             if (isCourier(index, phone)){
 
                 Order order = orderService.getOrder(index);
                 myOrders.add(++count, new MyOrders(
-                        getPhone(index), order.getFromAddress(),
-                        order.getToAddress(), order.getPrice(), order.getDeliveryTime(), 1,
-                        order.getNote(), order.getSize(), order.getStatus()));
+                        order.getId(), order.getTitle(), order.getStatus(), order.getPrice(),order.getSize(),
+                        order.getDeliveryDate(), order.getDeliveryTime(), order.getFromAddress(), order.getToAddress(),
+                        order.getOrderPhone(), order.getContactPhone(), order.getNote(), 1));
             }
         }
         return myOrders;
@@ -182,9 +182,9 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
         for (Integer index = 0; orderService.exists(index); ++index){
             Order order = orderService.getOrder(index);
             if (order.getStatus().equals("Active")){
-                orders.add(++count, new ActiveOrders(order.getOrderPhone(), order.getFromAddress(), order.getToAddress(),
-                        order.getPrice(), order.getOrderTime(), order.getDeliveryTime(),
-                        order.getNote(), order.getSize()));
+                orders.add(++count, new ActiveOrders(order.getTitle(), order.getPrice(), order.getSize(),
+                        order.getDeliveryDate(), order.getDeliveryTime(), order.getFromAddress(),
+                        order.getToAddress(), order.getNote()));
             }
         }
         return orders;
