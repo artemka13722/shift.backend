@@ -18,20 +18,13 @@ public class ActiveOrdersExtractor implements ResultSetExtractor<List<ActiveOrde
     @Override
     public List<ActiveOrders> extractData(ResultSet rs) throws SQLException, DataAccessException{
         List<ActiveOrders> orders = new ArrayList<>();
-        DateFormat date = new SimpleDateFormat("yyyy-MM-dd"); // Нужен для парсинга стринга в дату
-        DateFormat time = new SimpleDateFormat("hh:mm:ss"); // Нужен для парсинга стринга в time
         while(rs.next()){
             ActiveOrders order = new ActiveOrders();
             order.setTitle(rs.getString("title"));
             order.setPrice(Integer.parseInt(rs.getString("price")));
             order.setSize(rs.getString("size"));
-            try { // парсинг в дату жалуется, просит обработку экспешенов, без трай-кэтч не будет робить
-                order.setDeliveryDate(date.parse(rs.getString("deliveryDate")));
-                order.setDeliveryTime(time.parse(rs.getString("deliveryTime")));
-            }
-            catch (Exception e){
-                throw new NotFoundException("Error ActiveOrders Extractor");
-            }
+            order.setDeliveryDate(rs.getString("deliveryDate"));
+            order.setDeliveryTime(rs.getString("deliveryTime"));
             order.setFromAddress(rs.getString("fromAddress"));
             order.setToAddress(rs.getString("toAddress"));
             order.setNote(rs.getString("note"));

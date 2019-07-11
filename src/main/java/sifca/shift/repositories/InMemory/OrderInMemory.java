@@ -18,35 +18,14 @@ import java.util.List;
 @ConditionalOnProperty(name = "use.database", havingValue = "false")
 public class OrderInMemory implements OrderRepository {
     private Integer count = -1;
-    Date date1;
-    Date date2;
-    Date time1;
-    Date time2;
 
     public  List<Order> Orders = new ArrayList<>();
-    DateFormat date = new SimpleDateFormat("dd/MM/yyyy");
-    DateFormat time = new SimpleDateFormat("hh:mm:ss");
 
     @Autowired
     UserService userService;
 
     @Autowired
     public OrderInMemory(){
-        try{
-            String stringDate="01/12/1995";
-            String stringDate2="01/12/1995";
-            String stringTime = "12:20:30";
-            String stringTime2 = "17:30:20";
-            time1 = time.parse(stringTime);
-            time2 = time.parse(stringTime2);
-            date1 = date.parse(stringDate);
-            date2 = date.parse(stringDate2);
-        }catch(Exception e){
-        }
-        Orders.add(++count, new Order(count, "UUU", "89130000000", "from", "to", "89130000000", 200, date1,
-                time1, "Active", "lala", "small"));
-        Orders.add(++count, new Order(count, "BUU", "89131111111", "from", "to", "89131111111", 300, date2,
-                time2, "Active", "lala", "small"));
     }
 
     @Override
@@ -65,8 +44,8 @@ public class OrderInMemory implements OrderRepository {
                        String toAddress,
                        String contactPhone,
                        Integer price,
-                       Date deliveryDate,
-                       Date deliveryTime,
+                       String deliveryDate,
+                       String deliveryTime,
                        String status,
                        String note,
                        String size){

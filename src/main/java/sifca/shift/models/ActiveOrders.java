@@ -23,10 +23,10 @@ public class ActiveOrders {
     private String size;
 
     @ApiModelProperty(value = "Время и дата доставки заказа", required = true)
-    private Date deliveryDate;
+    private String deliveryDate;
 
     @ApiModelProperty(value = "Время и дата доставки заказа", required = true)
-    private Date deliveryTime;
+    private String deliveryTime;
 
     @ApiModelProperty(value = "Адрес места, где находится вещь", required = true)
     private String fromAddress;

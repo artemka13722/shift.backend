@@ -18,8 +18,6 @@ public class MyOrdersExtractor implements ResultSetExtractor<List<MyOrders>>{
     @Override
     public List<MyOrders> extractData(ResultSet rs) throws SQLException, DataAccessException{
         List<MyOrders> orders = new ArrayList<>();
-        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // Нужен для парсинга стринга в дату
-        DateFormat time = new SimpleDateFormat("hh:mm:ss");
 
         while(rs.next()){
             MyOrders order = new MyOrders();
@@ -28,13 +26,8 @@ public class MyOrdersExtractor implements ResultSetExtractor<List<MyOrders>>{
             order.setStatus(rs.getString("status"));
             order.setPrice(Integer.parseInt(rs.getString("price")));
             order.setSize(rs.getString("size"));
-            try {
-                order.setDeliveryDate(time.parse(rs.getString("deliveryDate")));
-                order.setDeliveryTime(sdf.parse(rs.getString("deliveryTime")));
-            }
-            catch (Exception e){
-                throw new NotFoundException("Date is incorrect");
-            }
+            order.setDeliveryDate(rs.getString("deliveryDate"));
+            order.setDeliveryTime(rs.getString("deliveryTime"));
             order.setFromAddress(rs.getString("fromAddress"));
             order.setToAddress(rs.getString("toAddress"));
             order.setPhone(rs.getString("orderPhone"));

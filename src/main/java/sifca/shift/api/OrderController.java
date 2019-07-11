@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sifca.shift.services.UserService;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -24,12 +25,16 @@ public class OrderController {
 
     @Autowired
     private OrderAndCourierService orderAndCourierService;
+
+    @Autowired
+    private UserService userService;
+
     private static final String _PATH = "api/v001/";
 
     public boolean isCorrectPhone(String phone){
         Pattern p = Pattern.compile("[0-9]+");
         Matcher m = p.matcher(phone);
-        if (m.matches()) {
+        if (m.matches() && userService.exists(phone)) {
             return true;
         }
         return false;
@@ -40,15 +45,15 @@ public class OrderController {
     public ResponseEntity<Integer> createOrder(
             @ApiParam(value = "Данные для добавления нового заказа/" +
                     "Data for adding new order")
-            @RequestParam(value = "phone", required = true) String phone,
+            @RequestHeader(value = "phone", required = true) String phone,
             @RequestBody Order order) {
-        if (isCorrectPhone(phone) && isCorrectPhone(order.getContactPhone())) {
+        if (isCorrectPhone(phone)) {
             orderService.create(null, order.getTitle(), phone, order.getFromAddress(),
                     order.getToAddress(), order.getContactPhone(), order.getPrice(), order.getDeliveryDate(),
                     order.getDeliveryTime(), "Active", order.getNote(), order.getSize());
             return ResponseEntity.ok(orderService.getIdOfLast());
         }
-        throw new NotFoundException("Phone number is incorrect");
+        throw new NotFoundException("Phone number is incorrect or access error");
     }
 
     @PostMapping(_PATH + "add/courier")
@@ -56,60 +61,76 @@ public class OrderController {
     public ResponseEntity<?> createCourier(
             @ApiParam(value = "Данные для добавления принятого оформленного заказа/" +
                     "Data for taking the order")
-            @RequestBody Id_phone body) {
-        if (isCorrectPhone(body.getPhone())) {
-            orderAndCourierService.create(body.getId(), body.getPhone(), "Processing");
+            @RequestHeader(value = "phone", required = true) String phone,
+            @RequestBody Integer id) {
+        if (isCorrectPhone(phone)) {
+            orderAndCourierService.create(id, phone, "Processing");
             return ResponseEntity.ok().build();
         }
-        throw new NotFoundException("Phone number is incorrect");
+        throw new NotFoundException("Phone number is incorrect or access error");
     }
 
     @GetMapping(_PATH + "get/orders")
     @ApiOperation(value = "Получение всех заказов со стороны заказчика/" +
             "Getting all orders")
-    public ResponseEntity<List<Order>> getAllOrders(){
-        List<Order> orders = orderService.getAll();
-        return ResponseEntity.ok(orders);
+    public ResponseEntity<List<Order>> getAllOrders(
+            @RequestHeader(value = "phone", required = true) String phone) {
+        if (isCorrectPhone(phone)) {
+            List<Order> orders = orderService.getAll();
+            return ResponseEntity.ok(orders);
+        }
+        throw new NotFoundException("Phone number is incorrect or access error");
     }
 
     @GetMapping(_PATH + "get/couriers")
     @ApiOperation(value = "Получение всех объявлений о заказах/" +
             "Getting all taking orders")
-    public ResponseEntity<List<Courier>> getAllCouriers(){
-        List<Courier> couriers = orderAndCourierService.getAll();
-        return ResponseEntity.ok(couriers);
+    public ResponseEntity<List<Courier>> getAllCouriers(
+            @RequestHeader(value = "phone", required = true) String phone){
+        if (isCorrectPhone(phone)) {
+            List<Courier> couriers = orderAndCourierService.getAll();
+            return ResponseEntity.ok(couriers);
+        }
+        throw new NotFoundException("Phone number is incorrect or access error");
     }
 
     @GetMapping(_PATH + "get/active-orders")
     @ApiOperation(value = "Получение всех активных заказов/" +
             "Getting all active orders")
     public ResponseEntity<List<ActiveOrders>> getActiveOrders(
-            @RequestParam(value = "phone", required = true) String phone) {
-        List<ActiveOrders> orders = orderAndCourierService.getActiveOrders(phone);
-        if( orders.isEmpty())
-            throw new NotFoundException("No orders");
-        return ResponseEntity.ok(orders);
+            @RequestHeader(value = "phone", required = true) String phone) {
+        if (isCorrectPhone(phone)) {
+            List<ActiveOrders> orders = orderAndCourierService.getActiveOrders(phone);
+            if (orders.isEmpty())
+                throw new NotFoundException("No orders");
+            return ResponseEntity.ok(orders);
+        }
+        throw new NotFoundException("Phone number is incorrect or access error");
     }
 
     @GetMapping(_PATH + "get/my-orders")
     @ApiOperation(value = "Получение всех заказов, связанных с переданным номером телефона/" +
             "Getting my orders")
     public ResponseEntity<List<MyOrders>> getMyOrders(
-            @RequestParam(value = "phone", required = true) String phone){
+            @RequestHeader(value = "phone", required = true) String phone){
         if (isCorrectPhone(phone)) {
             List<MyOrders> orders = orderAndCourierService.getMyOrders(phone);
             return ResponseEntity.ok(orders);
         }
-        throw new NotFoundException("Phone number is incorrect");
+        throw new NotFoundException("Phone number is incorrect or access error");
     }
 
     @GetMapping(_PATH + "get/status")
     @ApiOperation(value = "Получение статуса заказа по номеру и orderId заказа/" +
             "Getting status of order by phone number and OrderId")
     public ResponseEntity<String> getStatus(
-            @RequestBody Id_phone body){
-        String result = orderAndCourierService.getStatus(body.getId(), body.getPhone());
-        return ResponseEntity.ok(result);
+            @RequestHeader String phone,
+            @RequestBody Integer id){
+        if (isCorrectPhone(phone)) {
+            String result = orderAndCourierService.getStatus(id, phone);
+            return ResponseEntity.ok(result);
+        }
+        throw new NotFoundException("Phone number is incorrect or access error");
     }
 
     @PatchMapping(_PATH + "close")
@@ -118,11 +139,12 @@ public class OrderController {
     public  ResponseEntity<?> ChangeStatus(
             @ApiParam(value = "Данные для изменения статуса/" +
                     "Data for changing status")
-            @RequestBody Id_phone body) {
-        if (isCorrectPhone(body.getPhone())) {
-            orderAndCourierService.changeStatus(body.getId(), body.getPhone());
+            @RequestHeader String phone,
+            @RequestBody Integer id) {
+        if (isCorrectPhone(phone)) {
+            orderAndCourierService.changeStatus(id, phone);
             return ResponseEntity.ok().build();
         }
-        throw new NotFoundException("Phone number is incorrect");
+        throw new NotFoundException("Phone number is incorrect or access error");
     }
 }

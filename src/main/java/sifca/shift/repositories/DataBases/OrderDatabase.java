@@ -25,9 +25,6 @@ public class OrderDatabase implements OrderRepository {
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
 
-    Date date1, time1;
-    DateFormat date = new SimpleDateFormat("yyyy-MM-dd");
-    DateFormat time = new SimpleDateFormat("hh:mm:ss");
     String OrderIdGenerator = "create sequence IF NOT EXISTS ORDERID_GENERATOR";
 
     @Autowired
@@ -43,24 +40,15 @@ public class OrderDatabase implements OrderRepository {
                 "toAddress nvarchar(150) NOT NULL," +
                 "contactPhone varchar(11) NOT NULL," +
                 "price int NOT NULL," +
-                "deliveryDate Date NOT NULL," +
-                "deliveryTime Time NOT NULL," +
+                "deliveryDate varchar(20) NOT NULL," +
+                "deliveryTime varchar(20) NOT NULL," +
                 "status nvarchar(15) NOT NULL CHECK(status IN('Active', 'Done', " +
                 "'Processing', 'Closed'))," +
                 "note nvarchar(255)," +
                 "size nvarchar(30) NOT NULL" +
                 ");";
-        try{
-            String stringDate = "2018-07-10";
-            String stringTime = "17:30:20";
-            date1 = date.parse(stringDate);
-            time1 = time.parse(stringTime);
-        }catch(Exception e){
-            throw new NotFoundException("Date is incorrect");
-        }
         jdbcTemplate.update(OrderIdGenerator, new MapSqlParameterSource());
         jdbcTemplate.update(createOrderTable, new MapSqlParameterSource());
-        //create(null, "BULKA", "89135890000", "dwadaw", "dwadaw", "89135890000", 100, date1, time1, "Processing", "dwaaw", "dwad");
     }
 
     @Override
@@ -71,8 +59,8 @@ public class OrderDatabase implements OrderRepository {
                        String toAddress,
                        String contactPhone,
                        Integer price,
-                       Date deliveryDate,
-                       Date deliveryTime,
+                       String deliveryDate,
+                       String deliveryTime,
                        String status,
                        String note,
                        String size){

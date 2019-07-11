@@ -33,10 +33,10 @@ public class Order {
     private Integer price;
 
     @ApiModelProperty(value = "Дата доставки заказа", required = true)
-    private Date deliveryDate;
+    private String deliveryDate;
 
     @ApiModelProperty(value = "Время доставки заказа", required = true)
-    private Date deliveryTime;
+    private String deliveryTime;
 
     @ApiModelProperty(value = "Статус заказа", required = true)
     private String status;

@@ -14,8 +14,8 @@ public interface OrderRepository {
                  String toAddress,
                  String contactPhone,
                  Integer price,
-                 Date deliveryDate,
-                 Date deliveryTime,
+                 String deliveryDate,
+                 String deliveryTime,
                  String status,
                  String size,
                  String note

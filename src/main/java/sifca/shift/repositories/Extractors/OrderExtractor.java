@@ -20,8 +20,6 @@ public class OrderExtractor implements ResultSetExtractor<List<Order>>{
     @Override
     public List<Order> extractData(ResultSet rs) throws SQLException, DataAccessException{
         List<Order> orders = new ArrayList<>();
-        DateFormat date = new SimpleDateFormat("yyyy-MM-dd");
-        DateFormat time = new SimpleDateFormat("hh:mm:ss");
 
         while(rs.next()){
             Order order = new Order();
@@ -32,13 +30,8 @@ public class OrderExtractor implements ResultSetExtractor<List<Order>>{
             order.setToAddress(rs.getString("toAddress"));
             order.setContactPhone(rs.getString("contactPhone"));
             order.setPrice(Integer.parseInt(rs.getString("price")));
-            try { // парсинг в дату жалуется, просит обработку экспешенов, без трай-кэтч не будет робить
-                order.setDeliveryDate(date.parse(rs.getString("deliveryDate")));
-                order.setDeliveryTime(time.parse(rs.getString("deliveryTime")));
-            }
-            catch (Exception e){
-                throw new NotFoundException("Date is incorrect");
-            }
+            order.setDeliveryDate(rs.getString("deliveryDate"));
+            order.setDeliveryTime(rs.getString("deliveryTime"));
             order.setStatus(rs.getString("status")); //Взять первый символ из строки
             order.setNote(rs.getString("note"));
             order.setSize(rs.getString("size"));
