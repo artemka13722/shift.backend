@@ -24,14 +24,14 @@ public class UserDatabase implements UserRepository {
     private UserExtractor userExtractor;
 
     @PostConstruct
-    public void initialize(){
+    public void initialize() {
         String createUserTableSql = "create table if not exists USERS (" +
                 "phone  VARCHAR(11)," +
                 "name   VARCHAR(20)" +
                 ");";
 
+
         jdbcTemplate.update(createUserTableSql, new MapSqlParameterSource());
-        create("89515769680", "Tester");
     }
 
     @Override
@@ -43,7 +43,7 @@ public class UserDatabase implements UserRepository {
             List<User> users = jdbcTemplate.query(getUserSql, params, userExtractor);
             return users.get(0);
         }
-        throw new NotFoundException("User does not exist"); // user is already exists
+        throw new NotFoundException("User does not tableExist"); // user is already exists
     }
 
 
@@ -58,7 +58,7 @@ public class UserDatabase implements UserRepository {
             jdbcTemplate.update(sqlUpdate, params);
         }
         else
-            throw new NotFoundException("User does not exist"); // user does not exist
+            throw new NotFoundException("User does not tableExist"); // user does not tableExist
     }
 
     @Override
@@ -70,7 +70,7 @@ public class UserDatabase implements UserRepository {
             jdbcTemplate.update(deleteUserSql, params);
         }
         else
-            throw new NotFoundException("User does not exist"); // user does not exist
+            throw new NotFoundException("User does not tableExist"); // user does not tableExist
     }
 
     @Override
@@ -83,7 +83,7 @@ public class UserDatabase implements UserRepository {
             jdbcTemplate.update(createUserSql, userParams);
         }
         else
-            throw new NotFoundException("User is already exist"); // user does not exist
+            throw new NotFoundException("User is already tableExist"); // user does not tableExist
     }
 
     @Override

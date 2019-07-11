@@ -43,7 +43,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
             orderService.changeStatus(orderId, "Processing");
         }
         else
-            throw new NotFoundException("Order isn't active or the order does not exists or courier is already exist");
+            throw new NotFoundException("Order isn't active or the order does not exists or courier is already tableExist");
     }
 
     @Override
@@ -56,7 +56,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
             }
             return false;
         }
-        throw new NotFoundException("Order does not exist");
+        throw new NotFoundException("Order does not tableExist");
     }
 
     @Override
@@ -64,7 +64,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
         if (courierExists(id)){
             return couriers.get(id);
         }
-        throw new NotFoundException("Courier does not exist");
+        throw new NotFoundException("Courier does not tableExist");
     }
 
     @Override
@@ -78,7 +78,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
             else
                 return false;
         }
-        throw new NotFoundException("Order does not exist");
+        throw new NotFoundException("Order does not tableExist");
     }
 
     @Override
@@ -92,7 +92,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
             else
                 return false;
         }
-        throw new NotFoundException("Order does not exist");
+        throw new NotFoundException("Order does not tableExist");
     }
 
     @Override
@@ -131,7 +131,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
             }
         }
         else
-            throw new NotFoundException("Order does not exist or the phone number is incorrect");
+            throw new NotFoundException("Order does not tableExist or the phone number is incorrect");
     }
 
     @Override
@@ -171,7 +171,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
                 }
             }
         }
-        throw new NotFoundException("Courier does not exist");
+        throw new NotFoundException("Courier does not tableExist");
     }
 
     @Override
@@ -206,6 +206,6 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
         if (isCourier(orderId, phone)){
             return getCourier(orderId).getStatus();
         }
-        throw new NotFoundException("Order does not exist or the phone number is incorrect");
+        throw new NotFoundException("Order does not tableExist or the phone number is incorrect");
     }
 }

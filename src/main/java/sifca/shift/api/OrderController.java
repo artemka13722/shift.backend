@@ -40,9 +40,10 @@ public class OrderController {
     public ResponseEntity<Integer> createOrder(
             @ApiParam(value = "Данные для добавления нового заказа/" +
                     "Data for adding new order")
+            @RequestParam(value = "phone", required = true) String phone,
             @RequestBody Order order) {
-        if (isCorrectPhone(order.getOrderPhone()) && isCorrectPhone(order.getContactPhone())) {
-            orderService.create(null, order.getTitle(), order.getOrderPhone(), order.getFromAddress(),
+        if (isCorrectPhone(phone) && isCorrectPhone(order.getContactPhone())) {
+            orderService.create(null, order.getTitle(), phone, order.getFromAddress(),
                     order.getToAddress(), order.getContactPhone(), order.getPrice(), order.getDeliveryDate(),
                     order.getDeliveryTime(), "Active", order.getNote(), order.getSize());
             return ResponseEntity.ok(orderService.getIdOfLast());

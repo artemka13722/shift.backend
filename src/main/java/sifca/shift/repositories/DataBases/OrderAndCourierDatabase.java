@@ -47,14 +47,13 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     private ActiveOrdersExtractor activeOrdersExtractor;
 
     @PostConstruct
-    public void initialize(){
+    public void initialize() {
         String createTable = "CREATE TABLE IF NOT EXISTS Couriers(" +
                 "OrderId int NOT NULL," +
                 "CourierPhone nvarchar(11) NOT NULL," +
                 "Status varchar(15) NOT NULL CHECK(Status IN('Done', 'Processing', 'Closed'))" +
                 ");";
         jdbcTemplate.update(createTable, new MapSqlParameterSource());
-        //create(1, "89135895600", "Active");
     }
 
     @Override
@@ -66,7 +65,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
             }
             return false;
         }
-        throw new NotFoundException("Order does not exist");
+        throw new NotFoundException("Order does not tableExist");
     }
 
     @Override
@@ -78,8 +77,8 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
                     .addValue("courierPhone", courierPhone);
             jdbcTemplate.update(SqlInsert, param);
         }
-        throw new NotFoundException("The order is already exist or courier for this order is already exist " +
-                "or user with the phone number does not exist");
+        throw new NotFoundException("The order is already tableExist or courier for this order is already tableExist " +
+                "or user with the phone number does not tableExist");
     }
 
     @Override
@@ -91,7 +90,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
             List<Courier> couriers = jdbcTemplate.query(sql, param, courierExtractor);
             return couriers.get(0);
         }
-        throw new NotFoundException("Courier with the id does not exist");
+        throw new NotFoundException("Courier with the id does not tableExist");
     }
 
     @Override
@@ -108,7 +107,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
                 return false;
             return true;
         }
-        throw new NotFoundException("Order does not exist");
+        throw new NotFoundException("Order does not tableExist");
     }
 
     @Override
@@ -125,7 +124,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
                 return false;
             return true;
         }
-        throw new NotFoundException("Order does not exist");
+        throw new NotFoundException("Order does not tableExist");
     }
 
     @Override
@@ -166,7 +165,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
             }
         }
         else
-            throw new NotFoundException("Order does not exist");
+            throw new NotFoundException("Order does not tableExist");
     }
 
     @Override
@@ -202,7 +201,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
             List <Courier> couriers = jdbcTemplate.query(Sql, param, courierExtractor);
             return couriers.get(0).getCourierPhone();
         }
-        throw new NotFoundException("Courier does not exist");
+        throw new NotFoundException("Courier does not tableExist");
     }
 
     @Override
@@ -235,6 +234,6 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
         if (isCourier(orderId, phone)){
             return getCourier(orderId).getStatus();
         }
-        throw new NotFoundException("Order does not exist or the phone number is incorrect");
+        throw new NotFoundException("Order does not tableExist or the phone number is incorrect");
     }
 }

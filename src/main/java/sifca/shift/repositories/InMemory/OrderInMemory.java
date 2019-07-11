@@ -75,7 +75,7 @@ public class OrderInMemory implements OrderRepository {
                     deliveryDate, deliveryTime, status, note, size);
             Orders.add(++count, order);
         }
-        throw new NotFoundException("User does not exist or order is already exist");
+        throw new NotFoundException("User does not tableExist or order is already tableExist");
     }
 
     @Override
@@ -90,7 +90,7 @@ public class OrderInMemory implements OrderRepository {
                 return order;
             }
         }
-        throw new NotFoundException("Order with the id does not exist");
+        throw new NotFoundException("Order with the id does not tableExist");
     }
 
     @Override
@@ -112,6 +112,6 @@ public class OrderInMemory implements OrderRepository {
             Orders.set(id, order);
         }
         else
-            throw new NotFoundException("Order does not exist");
+            throw new NotFoundException("Order does not tableExist");
     }
 }

@@ -28,7 +28,7 @@ public class OrderDatabase implements OrderRepository {
     Date date1, time1;
     DateFormat date = new SimpleDateFormat("yyyy-MM-dd");
     DateFormat time = new SimpleDateFormat("hh:mm:ss");
-    String OrderIdGenerator = "create sequence ORDERID_GENERATOR";
+    String OrderIdGenerator = "create sequence IF NOT EXISTS ORDERID_GENERATOR";
 
     @Autowired
     private OrderExtractor orderExtractor;
@@ -140,13 +140,13 @@ public class OrderDatabase implements OrderRepository {
             jdbcTemplate.update(sql, params);
         }
         else
-            throw new NotFoundException("Order does not exist");
+            throw new NotFoundException("Order does not tableExist");
     }
 
     @Override
     public Integer getIdOfLast(){
         String Sql = "SELECT * FROM ORDERS";
         List<Order> orders = jdbcTemplate.query(Sql, orderExtractor);
-        return orders.size()-1;
+        return orders.size();
     }
 }
