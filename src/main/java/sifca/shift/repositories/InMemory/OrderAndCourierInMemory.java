@@ -105,33 +105,43 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
         return false;
     }
 
-    /// CHANGE, try to make this more easy and clearer
     @Override
-    public void changeStatus(Integer id, String phone) {
-        if (orderService.exists(id)) {
-            if (isCustomer(id, phone)) {
-                if (orderService.getOrder(id).getStatus().equals("Active")
-                        || orderService.getOrder(id).getStatus().equals("Processing")) {
-                    if (courierExists(id)) {
-                        Courier courier = getCourier(id);
-                        courier.setStatus("Closed");
-                        couriers.set(id, courier);
-                    }
-                    orderService.changeStatus(id, "Closed");
-                }
-            }
-            else
-            {
-                if (getCourier(id).getStatus().equals("Processing")){
-                    orderService.changeStatus(id, "Active");
+    public void cancel(Integer id, String phone){
+        if (isCustomer(id, phone)){
+            if (orderService.getOrder(id).getStatus().equals("Active")
+                    || orderService.getOrder(id).getStatus().equals("Processing")) {
+                if (courierExists(id)) {
                     Courier courier = getCourier(id);
-                    courier.setStatus("Closed");
+                    courier.setStatus("Canceled");
                     couriers.set(id, courier);
                 }
+                orderService.changeStatus(id, "Canceled");
             }
         }
         else
-            throw new NotFoundException("Order does not tableExist or the phone number is incorrect");
+            if (isCourier(id, phone)){
+                Courier courier = getCourier(id);
+                courier.setStatus("Canceled");
+                couriers.set(id, courier);
+                orderService.changeStatus(id, "Canceled");
+            }
+            else
+                throw new NotFoundException("Order does not exist or access error(wrong phone number) " +
+                    "or the order isn't active");
+    }
+
+    @Override
+    public void close(Integer id, String phone) {
+        if (isCourier(id, phone)) {
+            if (orderService.getOrder(id).getStatus().equals("Processing")) {
+                orderService.changeStatus(id, "Done");
+                Courier courier = getCourier(id);
+                courier.setStatus("Done");
+                couriers.set(id, courier);
+            }
+        }
+        else
+            throw new NotFoundException("Order does not exist or access error");
     }
 
     @Override

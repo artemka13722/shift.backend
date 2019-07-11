@@ -137,36 +137,49 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
         return true;
     }
 
-    // CHANGE, try to make this more easy and clearer
     @Override
-    public void changeStatus(Integer orderId, String phone) {
-        if (orderService.exists(orderId)){
-            if (isCustomer(orderId, phone)){
-                if (orderService.getOrder(orderId).getStatus().equals("Active")
-                        || orderService.getOrder(orderId).getStatus().equals("Processing")){
-                    if (courierExists(orderId)){
-                        String sql = "UPDATE couriers SET status = :status;";
-                        MapSqlParameterSource param = new MapSqlParameterSource()
-                                .addValue("status", "Closed");
-                        jdbcTemplate.update(sql, param);
-                    }
-                    orderService.changeStatus(orderId, "Closed");
-                }
-            }
-            else
-            {
-                if (getCourier(orderId).getStatus().equals("Processing")){
-                    orderService.changeStatus(orderId, "Active");
-                    String sql = "UPDATE couriers SET status = :status WHERE orderId = :id;";
+    public void cancel(Integer id, String phone){
+        if (isCustomer(id, phone)){
+            if (orderService.getOrder(id).getStatus().equals("Active")
+                    || orderService.getOrder(id).getStatus().equals("Processing")) {
+                if (courierExists(id)) {
+                    String sql = "UPDATE orders SET access = 'Canceled' " +
+                            "WHERE orderId = :Id;";
                     MapSqlParameterSource param = new MapSqlParameterSource()
-                            .addValue("status", "Closed")
-                            .addValue("id", orderId);
+                            .addValue("Id", id);
                     jdbcTemplate.update(sql, param);
                 }
+                orderService.changeStatus(id, "Canceled");
             }
         }
         else
-            throw new NotFoundException("Order does not tableExist");
+        if (isCourier(id, phone)){
+            String sql = "UPDATE couriers SET access = 'Canceled' " +
+                    "WHERE orderId = :Id;";
+            MapSqlParameterSource param = new MapSqlParameterSource()
+                    .addValue("Id", id);
+            jdbcTemplate.update(sql, param);
+            orderService.changeStatus(id, "Canceled");
+        }
+        else
+            throw new NotFoundException("Order does not exist or access error(wrong phone number) " +
+                    "or the order isn't active");
+    }
+
+    @Override
+    public void close(Integer id, String phone) {
+        if (isCourier(id, phone)) {
+            if (orderService.getOrder(id).getStatus().equals("Processing")) {
+                orderService.changeStatus(id, "Done");
+                String sql = "UPDATE couriers SET access = 'Done' " +
+                        "WHERE orderId = :Id;";
+                MapSqlParameterSource param = new MapSqlParameterSource()
+                        .addValue("Id", id);
+                jdbcTemplate.update(sql, param);
+            }
+        }
+        else
+            throw new NotFoundException("Order does not exist or access error");
     }
 
     @Override

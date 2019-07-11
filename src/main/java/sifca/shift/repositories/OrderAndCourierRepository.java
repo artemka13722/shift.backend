@@ -20,7 +20,9 @@ public interface OrderAndCourierRepository {
 
     boolean courierExists(Integer id);
 
-    void changeStatus(Integer id, String phone);
+    void close(Integer id, String phone);
+
+    void cancel(Integer id, String phone);
 
     List<MyOrders> getMyOrders(String phone);
 

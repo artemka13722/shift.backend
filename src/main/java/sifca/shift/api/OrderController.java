@@ -136,13 +136,28 @@ public class OrderController {
     @PatchMapping(_PATH + "close")
     @ApiOperation(value = "Закрытие заказа/" +
             "Closing the order")
-    public  ResponseEntity<?> ChangeStatus(
+    public  ResponseEntity<?> close(
             @ApiParam(value = "Данные для изменения статуса/" +
                     "Data for changing status")
             @RequestHeader String phone,
             @RequestBody Integer id) {
         if (isCorrectPhone(phone)) {
-            orderAndCourierService.changeStatus(id, phone);
+            orderAndCourierService.close(id, phone);
+            return ResponseEntity.ok().build();
+        }
+        throw new NotFoundException("Phone number is incorrect or access error");
+    }
+
+    @PatchMapping(_PATH + "cancel")
+    @ApiOperation(value = "Отмена заказа/" +
+            "Closing the order")
+    public  ResponseEntity<?> cancel(
+            @ApiParam(value = "Данные для изменения статуса/" +
+                    "Data for changing status")
+            @RequestHeader String phone,
+            @RequestBody Integer id) {
+        if (isCorrectPhone(phone)) {
+            orderAndCourierService.cancel(id, phone);
             return ResponseEntity.ok().build();
         }
         throw new NotFoundException("Phone number is incorrect or access error");
