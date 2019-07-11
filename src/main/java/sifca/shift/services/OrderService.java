@@ -25,8 +25,8 @@ public class OrderService {
                         String toAddress,
                         String contactPhone,
                         Integer price,
-                        Date deliveryDate,
-                        Date deliveryTime,
+                        String deliveryDate,
+                        String deliveryTime,
                         String status,
                         String note,
                         String size) {

@@ -97,8 +97,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     public boolean isCustomer(Integer id, String phone){
         if (orderService.exists(id)){
             String sql = "SELECT * FROM orders " +
-                    "JOIN Couriers ON orders.OrderId = Couriers.OrderId " +
-                    "WHERE orders.OrderId = :OrderId AND orders.orderPhone = :phone;";
+                    "WHERE orders.OrderId = :OrderId";
             MapSqlParameterSource param = new MapSqlParameterSource()
                     .addValue("OrderId", id)
                     .addValue("phone", phone);
@@ -151,15 +150,17 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
                                 .addValue("status", "Closed");
                         jdbcTemplate.update(sql, param);
                     }
+                    orderService.changeStatus(orderId, "Closed");
                 }
             }
             else
             {
                 if (getCourier(orderId).getStatus().equals("Processing")){
                     orderService.changeStatus(orderId, "Active");
-                    String sql = "UPDATE couriers SET status = :status;";
+                    String sql = "UPDATE couriers SET status = :status WHERE orderId = :id;";
                     MapSqlParameterSource param = new MapSqlParameterSource()
-                            .addValue("status", "Closed");
+                            .addValue("status", "Closed")
+                            .addValue("id", orderId);
                     jdbcTemplate.update(sql, param);
                 }
             }
