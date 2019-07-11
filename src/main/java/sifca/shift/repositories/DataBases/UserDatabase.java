@@ -26,8 +26,8 @@ public class UserDatabase implements UserRepository {
     @PostConstruct
     public void initialize() {
         String createUserTableSql = "create table if not exists USERS (" +
-                "phone  VARCHAR(11)," +
-                "name   VARCHAR(20)" +
+                "phone  VARCHAR(11) UNIQUE NOT NULL," +
+                "name   VARCHAR(20) NOT NULL" +
                 ");";
 
 
