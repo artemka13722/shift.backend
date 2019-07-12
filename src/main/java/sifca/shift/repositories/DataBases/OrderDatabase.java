@@ -121,7 +121,7 @@ public class OrderDatabase implements OrderRepository {
     @Override
     public void changeStatus(Integer orderId, String Status){
         if (exists(orderId)) {
-            String sql = "UPDATE order SET status = :status WHERE OrderId=:OrderId;";
+            String sql = "UPDATE orders SET status = :status WHERE OrderId=:OrderId;";
             MapSqlParameterSource params = new MapSqlParameterSource()
                     .addValue("OrderId", orderId)
                     .addValue("status", Status);

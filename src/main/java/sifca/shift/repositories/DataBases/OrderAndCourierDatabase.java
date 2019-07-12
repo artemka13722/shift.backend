@@ -76,6 +76,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
                     .addValue("orderId", orderId)
                     .addValue("courierPhone", courierPhone);
             jdbcTemplate.update(SqlInsert, param);
+            orderService.changeStatus(orderId, "Processing");
         }
         else
             throw new NotFoundException("The order is already  exist or courier for this order is already tableExist " +
@@ -180,14 +181,35 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
             throw new NotFoundException("Order does not exist or access error");
     }
 
+    public boolean courierExist(String phone){
+        String sql = "SELECT * FROM orders " +
+                "JOIN couriers ON couriers.OrderId = orders.OrderId " +
+                "WHERE orders.orderPhone = :phone";
+        MapSqlParameterSource param = new MapSqlParameterSource()
+                .addValue("phone", phone);
+        List<Order> orders = jdbcTemplate.query(sql, param, orderExtractor);
+        if (orders.isEmpty())
+            return false;
+        return true;
+    }
+
     @Override
     public List<MyOrders> getMyOrders(String phone){
+        String sql;
         List<MyOrders> myOrders = new ArrayList<>();
         // ADDING AS A CUSTOMER
-        String sql = "SELECT orders.orderId, title, orders.status, price, size, deliveryDate, deliveryTime, fromAddress," +
-                "toAddress, courierPhone, contactPhone, note, 0 as access FROM Orders " +
-                "JOIN couriers ON orders.OrderId = couriers.OrderId " +
-                "WHERE orderPhone = :phone;";
+        if (courierExist(phone)) {
+            sql = "SELECT orders.orderId, title, orders.status, price, size, deliveryDate, deliveryTime, fromAddress," +
+                    "toAddress, courierPhone as orderPhone, contactPhone, note, 0 as access FROM Orders " +
+                    "JOIN couriers ON orders.OrderId = couriers.OrderId " +
+                    "WHERE orderPhone = :phone;";
+        }
+        else
+        {
+            sql = "SELECT orders.orderId, title, orders.status, price, size, deliveryDate, deliveryTime, fromAddress," +
+                    "toAddress, orderPhone, contactPhone, note, 0 as access FROM Orders " +
+                    "WHERE orderPhone = :phone;";
+        }
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("phone", phone);
         myOrders.addAll(jdbcTemplate.query(sql, param, myOrdersExtractor));
@@ -223,7 +245,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
         String sql = "SELECT title, price, size, deliveryDate, deliveryTime, fromAddress, toAddress, note " +
                 "FROM Orders WHERE status = 'Active' AND orders.orderPhone <> :phone;";
         MapSqlParameterSource param = new MapSqlParameterSource()
-                .addValue("orderPhone", phone);
+                .addValue("phone", phone);
         activeOrders.addAll(jdbcTemplate.query(sql, param, activeOrdersExtractor));
         if (activeOrders.isEmpty())
             throw new NotFoundException("No active orders");
@@ -249,4 +271,5 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
         }
         throw new NotFoundException("Order does not exist or incorrect data");
     }
+
 }
