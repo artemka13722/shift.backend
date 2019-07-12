@@ -5,17 +5,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-import javax.annotation.PostConstruct;
-
 import sifca.shift.exception.NotFoundException;
 import sifca.shift.models.Order;
 import sifca.shift.repositories.Extractors.OrderExtractor;
 import sifca.shift.repositories.OrderRepository;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Repository
@@ -31,8 +26,8 @@ public class OrderDatabase implements OrderRepository {
     private OrderExtractor orderExtractor;
 
     @PostConstruct
-    public void initialize(){
-        String createOrderTable = "CREATE TABLE IF NOT EXISTS orders ("+
+    public void initialize() {
+        String createOrderTable = "CREATE TABLE IF NOT EXISTS orders (" +
                 "OrderId int default OrderId_GENERATOR.nextval," +
                 "Title nvarchar(120) NOT NULL," +
                 "orderPhone varchar(11) NOT NULL," +
@@ -62,7 +57,7 @@ public class OrderDatabase implements OrderRepository {
                        String deliveryTime,
                        String status,
                        String note,
-                       String size){
+                       String size) {
         String SQLinsert = "INSERT INTO orders(title, orderphone, fromaddress, toaddress, contactphone," +
                 "price, deliverydate, deliverytime, status, note, size) VALUES(:title, :orderPhone, " +
                 ":fromAddress, :toAddress, :contactPhone, :price, " +
@@ -84,7 +79,7 @@ public class OrderDatabase implements OrderRepository {
     }
 
     @Override
-    public List<Order> getAll(){
+    public List<Order> getAll() {
         String sqlGetAll = "SELECT * FROM orders;";
         List<Order> orders = jdbcTemplate.query(sqlGetAll, orderExtractor);
         if (orders.isEmpty())
@@ -93,45 +88,44 @@ public class OrderDatabase implements OrderRepository {
     }
 
     @Override
-    public Order getOrder(Integer OrderId){
+    public Order getOrder(Integer OrderId) {
         String sql = "SELECT * FROM orders WHERE OrderId = :OrderId;";
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("OrderId", OrderId);
         List<Order> orders = jdbcTemplate.query(sql, params, orderExtractor);
 
-        if(orders.isEmpty()){
+        if (orders.isEmpty()) {
             throw new NotFoundException("Error Get Order");
         }
         return orders.get(0);
     }
 
     @Override
-    public boolean exists(Integer OrderId){
+    public boolean exists(Integer OrderId) {
         String sql = "SELECT * FROM orders WHERE OrderId = :OrderId;";
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue("OrderId", OrderId);
         List<Order> orders = jdbcTemplate.query(sql, params, orderExtractor);
-        if (orders.isEmpty()){
+        if (orders.isEmpty()) {
             return false;
         }
         return true;
     }
 
     @Override
-    public void changeStatus(Integer orderId, String Status){
+    public void changeStatus(Integer orderId, String Status) {
         if (exists(orderId)) {
             String sql = "UPDATE orders SET status = :status WHERE OrderId=:OrderId;";
             MapSqlParameterSource params = new MapSqlParameterSource()
                     .addValue("OrderId", orderId)
                     .addValue("status", Status);
             jdbcTemplate.update(sql, params);
-        }
-        else
+        } else
             throw new NotFoundException("Order does not tableExist");
     }
 
     @Override
-    public Integer getIdOfLast(){
+    public Integer getIdOfLast() {
         String Sql = "SELECT * FROM ORDERS";
         List<Order> orders = jdbcTemplate.query(Sql, orderExtractor);
         return orders.size();

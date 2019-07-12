@@ -29,8 +29,6 @@ public class UserDatabase implements UserRepository {
                 "phone  VARCHAR(11) UNIQUE NOT NULL," +
                 "name   VARCHAR(20) NOT NULL" +
                 ");";
-
-
         jdbcTemplate.update(createUserTableSql, new MapSqlParameterSource());
     }
 

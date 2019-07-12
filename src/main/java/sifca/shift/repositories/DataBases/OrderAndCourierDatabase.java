@@ -52,10 +52,10 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     }
 
     @Override
-    public boolean existAndActive(Integer OrderId){
-        if (orderService.exists(OrderId)){
+    public boolean existAndActive(Integer OrderId) {
+        if (orderService.exists(OrderId)) {
             Order order = orderService.getOrder(OrderId);
-            if (order.getStatus().equals("Активный")){
+            if (order.getStatus().equals("Активный")) {
                 return true;
             }
             return false;
@@ -64,22 +64,21 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     }
 
     @Override
-    public void create(Integer orderId, String courierPhone, String status){
-        if (existAndActive(orderId) && !courierExists(orderId) && userService.exists(courierPhone)){
+    public void create(Integer orderId, String courierPhone, String status) {
+        if (existAndActive(orderId) && !courierExists(orderId) && userService.exists(courierPhone)) {
             String SqlInsert = "INSERT INTO Couriers VALUES(:orderId, :courierPhone, 'В процессе');";
             MapSqlParameterSource param = new MapSqlParameterSource()
                     .addValue("orderId", orderId)
                     .addValue("courierPhone", courierPhone);
             jdbcTemplate.update(SqlInsert, param);
             orderService.changeStatus(orderId, "В процессе");
-        }
-        else
+        } else
             throw new NotFoundException("The order is already  exist or courier for this order is already exist " +
-                "or user with the orderPhone number does not exist");
+                    "or user with the orderPhone number does not exist");
     }
 
     @Override
-    public Courier getCourier(Integer id){
+    public Courier getCourier(Integer id) {
         if (courierExists(id)) {
             String sql = "SELECT * FROM couriers WHERE OrderId = :OrderId;";
             MapSqlParameterSource param = new MapSqlParameterSource()
@@ -91,8 +90,8 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     }
 
     @Override
-    public boolean isCustomer(Integer id, String phone){
-        if (orderService.exists(id)){
+    public boolean isCustomer(Integer id, String phone) {
+        if (orderService.exists(id)) {
             String sql = "SELECT * FROM orders " +
                     "WHERE orders.OrderId = :OrderId AND orderphone = :phone";
             MapSqlParameterSource param = new MapSqlParameterSource()
@@ -107,8 +106,8 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     }
 
     @Override
-    public boolean isCourier(Integer id, String phone){
-        if (orderService.exists(id)){
+    public boolean isCourier(Integer id, String phone) {
+        if (orderService.exists(id)) {
             String sql = "SELECT * FROM orders " +
                     "JOIN Couriers ON orders.OrderId = Couriers.OrderId " +
                     "WHERE Orders.OrderId = :OrderId AND couriers.CourierPhone = :phone;";
@@ -124,7 +123,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     }
 
     @Override
-    public boolean courierExists(Integer OrderId){
+    public boolean courierExists(Integer OrderId) {
         String sql = "SELECT * FROM couriers WHERE OrderId = :OrderId;";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("OrderId", OrderId);
@@ -171,12 +170,11 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
                         .addValue("Id", id);
                 jdbcTemplate.update(sql, param);
             }
-        }
-        else
+        } else
             throw new NotFoundException("Order does not exist or access error");
     }
 
-    public boolean courierExist(String phone){
+    public boolean courierExist(String phone) {
         String sql = "SELECT * FROM orders " +
                 "JOIN couriers ON couriers.OrderId = orders.OrderId " +
                 "WHERE orders.orderPhone = :phone";
@@ -189,7 +187,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     }
 
     @Override
-    public List<MyOrders> getMyOrders(String phone){
+    public List<MyOrders> getMyOrders(String phone) {
         String sql;
         List<MyOrders> myOrders = new ArrayList<>();
         // ADDING AS A CUSTOMER
@@ -198,9 +196,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
                     "toAddress, courierPhone as orderPhone, contactPhone, note, 0 as access FROM Orders " +
                     "JOIN couriers ON orders.OrderId = couriers.OrderId " +
                     "WHERE orderPhone = :phone;";
-        }
-        else
-        {
+        } else {
             sql = "SELECT orders.orderId, title, orders.status, price, size, deliveryDate, deliveryTime, fromAddress," +
                     "toAddress, orderPhone, contactPhone, note, 0 as access FROM Orders " +
                     "WHERE orderPhone = :phone;";
@@ -222,20 +218,20 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     }
 
     @Override
-    public String getPhone(Integer Id){
-        if (courierExists(Id)){
+    public String getPhone(Integer Id) {
+        if (courierExists(Id)) {
             String Sql = "SELECT CourierPhone FROM couriers " +
                     "WHERE OrderId = :Id";
             MapSqlParameterSource param = new MapSqlParameterSource()
                     .addValue("Id", Id);
-            List <Courier> couriers = jdbcTemplate.query(Sql, param, courierExtractor);
+            List<Courier> couriers = jdbcTemplate.query(Sql, param, courierExtractor);
             return couriers.get(0).getCourierPhone();
         }
         throw new NotFoundException("Courier does not exist");
     }
 
     @Override
-    public List<Order> getActiveOrders(String phone){
+    public List<Order> getActiveOrders(String phone) {
         List<Order> activeOrders = new ArrayList<>();
         String sql = "SELECT * " +
                 "FROM Orders WHERE status = 'Active' AND orders.orderPhone <> :phone;";
@@ -248,7 +244,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     }
 
     @Override
-    public List<Courier> getAll(){
+    public List<Courier> getAll() {
         String sql = "SELECT * FROM couriers;";
         List<Courier> couriers = jdbcTemplate.query(sql, courierExtractor);
         if (couriers.isEmpty())
@@ -257,11 +253,11 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     }
 
     @Override
-    public String getStatus(Integer orderId, String phone){
-        if (isCustomer(orderId, phone)){
+    public String getStatus(Integer orderId, String phone) {
+        if (isCustomer(orderId, phone)) {
             return orderService.getOrder(orderId).getStatus();
         }
-        if (isCourier(orderId, phone)){
+        if (isCourier(orderId, phone)) {
             return getCourier(orderId).getStatus();
         }
         throw new NotFoundException("Order does not exist or incorrect data");

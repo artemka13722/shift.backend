@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Courier {
-    @ApiModelProperty(value = "orderId взятого заказа")
+    @ApiModelProperty(value = "Идентификатор взятого заказа")
     public Integer orderId;
 
-    @ApiModelProperty(value = "Номер заказчика")
+    @ApiModelProperty(value = "Номер курьера")
     public String courierPhone;
 
     @ApiModelProperty(value = "Статус заказа")

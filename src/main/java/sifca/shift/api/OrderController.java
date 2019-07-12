@@ -53,8 +53,7 @@ public class OrderController {
                     order.getToAddress(), order.getContactPhone(), order.getPrice(), order.getDeliveryDate(),
                     order.getDeliveryTime(), "Active", order.getNote(), order.getSize());
             return ResponseEntity.ok().build();
-        }
-        else
+        } else
             throw new NotFoundException("Phone number is incorrect or access error");
     }
 
@@ -68,8 +67,7 @@ public class OrderController {
         if (isCorrectPhone(phone)) {
             orderAndCourierService.create(id, phone, "Processing");
             return ResponseEntity.ok().build();
-        }
-        else
+        } else
             throw new NotFoundException("Phone number is incorrect or access error");
     }
 
@@ -89,7 +87,7 @@ public class OrderController {
     @ApiOperation(value = "Получение всех объявлений о заказах/" +
             "Getting all taking orders")
     public ResponseEntity<List<Courier>> getAllCouriers(
-            @RequestHeader(value = "orderPhone", required = true) String phone){
+            @RequestHeader(value = "orderPhone", required = true) String phone) {
         if (isCorrectPhone(phone)) {
             List<Courier> couriers = orderAndCourierService.getAll();
             return ResponseEntity.ok(couriers);
@@ -113,7 +111,7 @@ public class OrderController {
     @ApiOperation(value = "Получение всех заказов, связанных с переданным номером телефона/" +
             "Getting my orders")
     public ResponseEntity<List<MyOrders>> getMyOrders(
-            @RequestHeader(value = "orderPhone", required = true) String phone){
+            @RequestHeader(value = "orderPhone", required = true) String phone) {
         if (isCorrectPhone(phone)) {
             List<MyOrders> orders = orderAndCourierService.getMyOrders(phone);
             return ResponseEntity.ok(orders);
@@ -126,7 +124,7 @@ public class OrderController {
             "Getting status of order by orderPhone number and OrderId")
     public ResponseEntity<String> getStatus(
             @RequestHeader(value = "orderPhone", required = true) String phone,
-            @RequestBody Integer id){
+            @RequestBody Integer id) {
         if (isCorrectPhone(phone)) {
             String result = orderAndCourierService.getStatus(id, phone);
             return ResponseEntity.ok(result);
@@ -137,7 +135,7 @@ public class OrderController {
     @PatchMapping(_PATH + "close")
     @ApiOperation(value = "Закрытие заказа/" +
             "Closing the order")
-    public  ResponseEntity<?> close(
+    public ResponseEntity<?> close(
             @ApiParam(value = "Данные для изменения статуса/" +
                     "Data for changing status")
             @RequestHeader(value = "orderPhone", required = true) String phone,
@@ -152,7 +150,7 @@ public class OrderController {
     @PatchMapping(_PATH + "cancel")
     @ApiOperation(value = "Отмена заказа/" +
             "Closing the order")
-    public  ResponseEntity<?> cancel(
+    public ResponseEntity<?> cancel(
             @ApiParam(value = "Данные для изменения статуса/" +
                     "Data for changing status")
             @RequestHeader(value = "orderPhone", required = true) String phone,
