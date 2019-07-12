@@ -237,7 +237,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     @Override
     public List<Order> getActiveOrders(String phone){
         List<Order> activeOrders = new ArrayList<>();
-        String sql = "SELECT title, price, size, deliveryDate, deliveryTime, fromAddress, toAddress, note " +
+        String sql = "SELECT * FROM ORDERS " +
                 "FROM Orders WHERE status = 'Active' AND orders.orderPhone <> :phone;";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("phone", phone);

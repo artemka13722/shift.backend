@@ -32,13 +32,12 @@ public class OrderController {
     private static final String _PATH = "api/v001/";
 
     public boolean isCorrectPhone(String phone) {
-        return true;
-//        Pattern p = Pattern.compile("[0-9]+");
-//        Matcher m = p.matcher(phone);
-//        if (m.matches() && userService.exists(phone)) {
-//            return true;
-//        }
-//        return false;
+        Pattern p = Pattern.compile("[0-9]+");
+        Matcher m = p.matcher(phone);
+        if (m.matches() && userService.exists(phone)) {
+            return true;
+        }
+        return false;
     }
 
     @PostMapping(_PATH + "add/order")
@@ -123,7 +122,7 @@ public class OrderController {
     @ApiOperation(value = "Получение статуса заказа по номеру и orderId заказа/" +
             "Getting status of order by orderPhone number and OrderId")
     public ResponseEntity<String> getStatus(
-            @RequestHeader String phone,
+            @RequestHeader(value = "orderPhone", required = true) String phone,
             @RequestBody Integer id){
         if (isCorrectPhone(phone)) {
             String result = orderAndCourierService.getStatus(id, phone);
@@ -138,7 +137,7 @@ public class OrderController {
     public  ResponseEntity<?> close(
             @ApiParam(value = "Данные для изменения статуса/" +
                     "Data for changing status")
-            @RequestHeader String phone,
+            @RequestHeader(value = "orderPhone", required = true) String phone,
             @RequestBody Integer id) {
         if (isCorrectPhone(phone)) {
             orderAndCourierService.close(id, phone);
@@ -153,7 +152,7 @@ public class OrderController {
     public  ResponseEntity<?> cancel(
             @ApiParam(value = "Данные для изменения статуса/" +
                     "Data for changing status")
-            @RequestHeader String phone,
+            @RequestHeader(value = "orderPhone", required = true) String phone,
             @RequestBody Integer id) {
         if (isCorrectPhone(phone)) {
             orderAndCourierService.cancel(id, phone);
