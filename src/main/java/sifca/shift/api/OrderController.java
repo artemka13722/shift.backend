@@ -1,21 +1,21 @@
 package sifca.shift.api;
 
 
-import sifca.shift.exception.NotFoundException;
-import sifca.shift.models.*;
-import sifca.shift.services.OrderService;
-import sifca.shift.services.OrderAndCourierService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sifca.shift.exception.NotFoundException;
+import sifca.shift.models.Courier;
+import sifca.shift.models.MyOrders;
+import sifca.shift.models.Order;
+import sifca.shift.services.OrderAndCourierService;
+import sifca.shift.services.OrderService;
 import sifca.shift.services.UserService;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @RestController
 @Api(description = "Запросы на работу с заказами/Queries for work with orders")
@@ -32,12 +32,13 @@ public class OrderController {
     private static final String _PATH = "api/v001/";
 
     public boolean isCorrectPhone(String phone) {
-        Pattern p = Pattern.compile("[0-9]+");
-        Matcher m = p.matcher(phone);
-        if (m.matches() && userService.exists(phone)) {
-            return true;
-        }
-        return false;
+        return true;
+//        Pattern p = Pattern.compile("[0-9]+");
+//        Matcher m = p.matcher(phone);
+//        if (m.matches() && userService.exists(phone)) {
+//            return true;
+//        }
+//        return false;
     }
 
     @PostMapping(_PATH + "add/order")
@@ -53,7 +54,8 @@ public class OrderController {
                     order.getDeliveryTime(), "Active", order.getNote(), order.getSize());
             return ResponseEntity.ok().build();
         }
-        throw new NotFoundException("Phone number is incorrect or access error");
+        else
+            throw new NotFoundException("Phone number is incorrect or access error");
     }
 
     @PostMapping(_PATH + "add/courier")
@@ -67,7 +69,8 @@ public class OrderController {
             orderAndCourierService.create(id, phone, "Processing");
             return ResponseEntity.ok().build();
         }
-        throw new NotFoundException("Phone number is incorrect or access error");
+        else
+            throw new NotFoundException("Phone number is incorrect or access error");
     }
 
     @GetMapping(_PATH + "get/orders")

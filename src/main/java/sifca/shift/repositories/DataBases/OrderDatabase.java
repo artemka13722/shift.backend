@@ -42,8 +42,7 @@ public class OrderDatabase implements OrderRepository {
                 "price int NOT NULL," +
                 "deliveryDate varchar(20) NOT NULL," +
                 "deliveryTime varchar(20) NOT NULL," +
-                "status nvarchar(15) NOT NULL CHECK(status IN('Active', 'Done', " +
-                "'Processing', 'Canceled'))," +
+                "status nvarchar(15) NOT NULL," +
                 "note nvarchar(255)," +
                 "size nvarchar(30) NOT NULL" +
                 ");";
