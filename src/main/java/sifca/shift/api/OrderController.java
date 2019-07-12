@@ -42,7 +42,7 @@ public class OrderController {
 
     @PostMapping(_PATH + "add/order")
     @ApiOperation(value = "Оформление заказа/Placing new order")
-    public ResponseEntity<Integer> createOrder(
+    public ResponseEntity<?> createOrder(
             @ApiParam(value = "Данные для добавления нового заказа/" +
                     "Data for adding new order")
             @RequestHeader(value = "phone", required = true) String phone,
@@ -51,7 +51,7 @@ public class OrderController {
             orderService.create(null, order.getTitle(), phone, order.getFromAddress(),
                     order.getToAddress(), order.getContactPhone(), order.getPrice(), order.getDeliveryDate(),
                     order.getDeliveryTime(), "Active", order.getNote(), order.getSize());
-            return ResponseEntity.ok(orderService.getIdOfLast());
+            return ResponseEntity.ok().build();
         }
         throw new NotFoundException("Phone number is incorrect or access error");
     }

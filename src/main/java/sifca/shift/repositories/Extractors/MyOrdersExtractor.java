@@ -21,7 +21,7 @@ public class MyOrdersExtractor implements ResultSetExtractor<List<MyOrders>>{
 
         while(rs.next()){
             MyOrders order = new MyOrders();
-            order.setId(Integer.parseInt(rs.getString("id")));
+            order.setId(Integer.parseInt(rs.getString("OrderId")));
             order.setTitle(rs.getString("title"));
             order.setStatus(rs.getString("status"));
             order.setPrice(Integer.parseInt(rs.getString("price")));
