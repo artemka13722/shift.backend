@@ -27,7 +27,7 @@ public class MyOrdersExtractor implements ResultSetExtractor<List<MyOrders>>{
             order.setDeliveryTime(rs.getString("deliveryTime"));
             order.setFromAddress(rs.getString("fromAddress"));
             order.setToAddress(rs.getString("toAddress"));
-            order.setOrderPhone(rs.getString("orderPhone"));
+            order.setPhone(rs.getString("orderPhone"));
             order.setContactPhone("contactPhone");
             order.setNote(rs.getString("note"));
             order.setAccess(Integer.parseInt(rs.getString("access")));

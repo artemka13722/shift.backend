@@ -32,13 +32,11 @@ public class OrderController {
     private static final String _PATH = "api/v001/";
 
     public boolean isCorrectPhone(String phone){
-        if (phone.length() != 11) {
             Pattern p = Pattern.compile("[0-9]+");
             Matcher m = p.matcher(phone);
             if (m.matches() && userService.exists(phone)) {
                 return true;
             }
-        }
         return false;
     }
 

@@ -184,8 +184,9 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     public List<MyOrders> getMyOrders(String phone){
         List<MyOrders> myOrders = new ArrayList<>();
         // ADDING AS A CUSTOMER
-        String sql = "SELECT orderId, title, status, price, size, deliveryDate, deliveryTime, fromAddress," +
-                "toAddress, orderPhone, contactPhone, note, 0 as access FROM Orders " +
+        String sql = "SELECT orders.orderId, title, orders.status, price, size, deliveryDate, deliveryTime, fromAddress," +
+                "toAddress, courierPhone, contactPhone, note, 0 as access FROM Orders " +
+                "JOIN couriers ON orders.OrderId = couriers.OrderId" +
                 "WHERE orderPhone = :phone;";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("orderPhone",phone);
