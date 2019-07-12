@@ -31,13 +31,14 @@ public class OrderController {
 
     private static final String _PATH = "api/v001/";
 
-    public boolean isCorrectPhone(String phone){
-            Pattern p = Pattern.compile("[0-9]+");
-            Matcher m = p.matcher(phone);
-            if (m.matches() && userService.exists(phone)) {
-                return true;
-            }
-        return false;
+    public boolean isCorrectPhone(String phone) {
+        return true;
+//        Pattern p = Pattern.compile("[0-9]+");
+//        Matcher m = p.matcher(phone);
+//        if (m.matches() && userService.exists(phone)) {
+//            return true;
+//        }
+//        return false;
     }
 
     @PostMapping(_PATH + "add/order")
