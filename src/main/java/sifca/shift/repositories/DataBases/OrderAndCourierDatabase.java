@@ -189,7 +189,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
                 "JOIN couriers ON orders.OrderId = couriers.OrderId" +
                 "WHERE orderPhone = :phone;";
         MapSqlParameterSource param = new MapSqlParameterSource()
-                .addValue("orderPhone",phone);
+                .addValue("order", phone);
         myOrders.addAll(jdbcTemplate.query(sql, param, myOrdersExtractor));
         // ADDING AS A COURIER
         sql = "SELECT orders.OrderId, title, couriers.status, price, size, deliveryDate, deliveryTime, fromAddress, " +
@@ -197,7 +197,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
                 "JOIN couriers ON orders.OrderId = couriers.OrderId " +
                 "WHERE couriers.courierPhone = :phone;";
         param = new MapSqlParameterSource()
-                .addValue("orderPhone",phone);
+                .addValue("order", phone);
         myOrders.addAll(jdbcTemplate.query(sql, param, myOrdersExtractor));
         if (myOrders.isEmpty())
             throw new NotFoundException("No my orders");
