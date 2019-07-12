@@ -77,7 +77,8 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
                     .addValue("courierPhone", courierPhone);
             jdbcTemplate.update(SqlInsert, param);
         }
-        throw new NotFoundException("The order is already tableExist or courier for this order is already tableExist " +
+        else
+            throw new NotFoundException("The order is already  exist or courier for this order is already tableExist " +
                 "or user with the phone number does not tableExist");
     }
 
@@ -159,7 +160,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
             jdbcTemplate.update(sql, param);
             orderService.changeStatus(id, "Canceled");
         } else
-            throw new NotFoundException("Order does not exist or access error(wrong phone number) " +
+            throw new NotFoundException("Order does not exist or access  error(wrong phone number) " +
                     "or the order isn't active");
     }
 
@@ -183,14 +184,14 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     public List<MyOrders> getMyOrders(String phone){
         List<MyOrders> myOrders = new ArrayList<>();
         // ADDING AS A CUSTOMER
-        String sql = "SELECT id, title, status, price, size, deliveryDate, deliveryTime, fromAddress," +
+        String sql = "SELECT orderId, title, status, price, size, deliveryDate, deliveryTime, fromAddress," +
                 "toAddress, orderPhone, contactPhone, note, 0 as access FROM Orders " +
                 "WHERE orderPhone = :phone;";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("phone",phone);
         myOrders.addAll(jdbcTemplate.query(sql, param, myOrdersExtractor));
         // ADDING AS A COURIER
-        sql = "SELECT orders.OrderId, title, orders.status, price, size, deliveryDate, deliveryTime, fromAddress, " +
+        sql = "SELECT orders.OrderId, title, couriers.status, price, size, deliveryDate, deliveryTime, fromAddress, " +
                 "toAddress, orderPhone, contactPhone, note, 1 as access FROM Orders " +
                 "JOIN couriers ON orders.OrderId = couriers.OrderId " +
                 "WHERE couriers.courierPhone = :phone;";
