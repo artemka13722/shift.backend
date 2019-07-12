@@ -126,7 +126,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
                 orderService.changeStatus(id, "Canceled");
             }
             else
-                throw new NotFoundException("Order does not exist or access error(wrong phone number) " +
+                throw new NotFoundException("Order does not exist or access error(wrong orderPhone number) " +
                     "or the order isn't active");
     }
 
@@ -216,6 +216,6 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
         if (isCourier(orderId, phone)){
             return getCourier(orderId).getStatus();
         }
-        throw new NotFoundException("Order does not tableExist or the phone number is incorrect");
+        throw new NotFoundException("Order does not tableExist or the orderPhone number is incorrect");
     }
 }

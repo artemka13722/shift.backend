@@ -32,10 +32,12 @@ public class OrderController {
     private static final String _PATH = "api/v001/";
 
     public boolean isCorrectPhone(String phone){
-        Pattern p = Pattern.compile("[0-9]+");
-        Matcher m = p.matcher(phone);
-        if (m.matches() && userService.exists(phone)) {
-            return true;
+        if (phone.length() != 11) {
+            Pattern p = Pattern.compile("[0-9]+");
+            Matcher m = p.matcher(phone);
+            if (m.matches() && userService.exists(phone)) {
+                return true;
+            }
         }
         return false;
     }
@@ -45,7 +47,7 @@ public class OrderController {
     public ResponseEntity<?> createOrder(
             @ApiParam(value = "Данные для добавления нового заказа/" +
                     "Data for adding new order")
-            @RequestHeader(value = "phone", required = true) String phone,
+            @RequestHeader(value = "orderPhone", required = true) String phone,
             @RequestBody Order order) {
         if (isCorrectPhone(phone)) {
             orderService.create(null, order.getTitle(), phone, order.getFromAddress(),
@@ -61,7 +63,7 @@ public class OrderController {
     public ResponseEntity<?> createCourier(
             @ApiParam(value = "Данные для добавления принятого оформленного заказа/" +
                     "Data for taking the order")
-            @RequestHeader(value = "phone", required = true) String phone,
+            @RequestHeader(value = "orderPhone", required = true) String phone,
             @RequestBody Integer id) {
         if (isCorrectPhone(phone)) {
             orderAndCourierService.create(id, phone, "Processing");
@@ -74,7 +76,7 @@ public class OrderController {
     @ApiOperation(value = "Получение всех заказов со стороны заказчика/" +
             "Getting all orders")
     public ResponseEntity<List<Order>> getAllOrders(
-            @RequestHeader(value = "phone", required = true) String phone) {
+            @RequestHeader(value = "orderPhone", required = true) String phone) {
         if (isCorrectPhone(phone)) {
             List<Order> orders = orderService.getAll();
             return ResponseEntity.ok(orders);
@@ -86,7 +88,7 @@ public class OrderController {
     @ApiOperation(value = "Получение всех объявлений о заказах/" +
             "Getting all taking orders")
     public ResponseEntity<List<Courier>> getAllCouriers(
-            @RequestHeader(value = "phone", required = true) String phone){
+            @RequestHeader(value = "orderPhone", required = true) String phone){
         if (isCorrectPhone(phone)) {
             List<Courier> couriers = orderAndCourierService.getAll();
             return ResponseEntity.ok(couriers);
@@ -98,11 +100,9 @@ public class OrderController {
     @ApiOperation(value = "Получение всех активных заказов/" +
             "Getting all active orders")
     public ResponseEntity<List<ActiveOrders>> getActiveOrders(
-            @RequestHeader(value = "phone", required = true) String phone) {
+            @RequestHeader(value = "orderPhone", required = true) String phone) {
         if (isCorrectPhone(phone)) {
             List<ActiveOrders> orders = orderAndCourierService.getActiveOrders(phone);
-            if (orders.isEmpty())
-                throw new NotFoundException("No orders");
             return ResponseEntity.ok(orders);
         }
         throw new NotFoundException("Phone number is incorrect or access error");
@@ -112,7 +112,7 @@ public class OrderController {
     @ApiOperation(value = "Получение всех заказов, связанных с переданным номером телефона/" +
             "Getting my orders")
     public ResponseEntity<List<MyOrders>> getMyOrders(
-            @RequestHeader(value = "phone", required = true) String phone){
+            @RequestHeader(value = "orderPhone", required = true) String phone){
         if (isCorrectPhone(phone)) {
             List<MyOrders> orders = orderAndCourierService.getMyOrders(phone);
             return ResponseEntity.ok(orders);
@@ -122,7 +122,7 @@ public class OrderController {
 
     @GetMapping(_PATH + "get/status")
     @ApiOperation(value = "Получение статуса заказа по номеру и orderId заказа/" +
-            "Getting status of order by phone number and OrderId")
+            "Getting status of order by orderPhone number and OrderId")
     public ResponseEntity<String> getStatus(
             @RequestHeader String phone,
             @RequestBody Integer id){

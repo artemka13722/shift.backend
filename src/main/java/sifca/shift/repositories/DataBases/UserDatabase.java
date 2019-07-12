@@ -39,7 +39,7 @@ public class UserDatabase implements UserRepository {
         if (exists(phone)) {
             String getUserSql = "SELECT phone, name from users where phone=:phone";
             MapSqlParameterSource params = new MapSqlParameterSource()
-                    .addValue("phone", phone);
+                    .addValue("orderPhone", phone);
             List<User> users = jdbcTemplate.query(getUserSql, params, userExtractor);
             return users.get(0);
         }
@@ -52,7 +52,7 @@ public class UserDatabase implements UserRepository {
         if (exists(oldPhone) && !exists(phone)) {
             String sqlUpdate = "UPDATE users set name=:name , phone=:phone where phone=:oldPhone";
             MapSqlParameterSource params = new MapSqlParameterSource()
-                    .addValue("phone", phone)
+                    .addValue("orderPhone", phone)
                     .addValue("oldPhone", oldPhone)
                     .addValue("name", name);
             jdbcTemplate.update(sqlUpdate, params);
@@ -66,7 +66,7 @@ public class UserDatabase implements UserRepository {
         if (exists(phone)) {
             String deleteUserSql = "delete from users where phone =:phone";
             MapSqlParameterSource params = new MapSqlParameterSource()
-                    .addValue("phone", phone);
+                    .addValue("orderPhone", phone);
             jdbcTemplate.update(deleteUserSql, params);
         }
         else
@@ -79,7 +79,7 @@ public class UserDatabase implements UserRepository {
             String createUserSql = "insert into Users (Phone, Name) values (:phone, :name)";
             MapSqlParameterSource userParams = new MapSqlParameterSource()
                     .addValue("name", name)
-                    .addValue("phone", phone);
+                    .addValue("orderPhone", phone);
             jdbcTemplate.update(createUserSql, userParams);
         }
         else
@@ -100,7 +100,7 @@ public class UserDatabase implements UserRepository {
     public boolean exists(String phone){
         String sql = "SELECT * FROM users WHERE phone=:phone;";
         MapSqlParameterSource param = new MapSqlParameterSource()
-                .addValue("phone", phone);
+                .addValue("orderPhone", phone);
         List<User> users = jdbcTemplate.query(sql, param, userExtractor);
         if (!users.isEmpty())
             return true;

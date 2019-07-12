@@ -3,13 +3,10 @@ package sifca.shift.repositories.Extractors;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Component;
-import sifca.shift.exception.NotFoundException;
 import sifca.shift.models.MyOrders;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +27,8 @@ public class MyOrdersExtractor implements ResultSetExtractor<List<MyOrders>>{
             order.setDeliveryTime(rs.getString("deliveryTime"));
             order.setFromAddress(rs.getString("fromAddress"));
             order.setToAddress(rs.getString("toAddress"));
-            order.setPhone(rs.getString("orderPhone"));
-            order.setOutPhone("outPhone");
+            order.setOrderPhone(rs.getString("orderPhone"));
+            order.setContactPhone("contactPhone");
             order.setNote(rs.getString("note"));
             order.setAccess(Integer.parseInt(rs.getString("access")));
             orders.add(order);

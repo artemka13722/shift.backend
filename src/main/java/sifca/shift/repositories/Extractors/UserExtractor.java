@@ -20,7 +20,7 @@ public class UserExtractor implements ResultSetExtractor<List<User>> {
         while (rs.next()) {
             User user = new User();
             user.setName(rs.getString("name"));
-            user.setPhone(rs.getString("phone"));
+            user.setPhone(rs.getString("orderPhone"));
             users.add(user);
         }
         return users;

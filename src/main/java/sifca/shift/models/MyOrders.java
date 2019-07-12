@@ -38,10 +38,10 @@ public class MyOrders {
     private String toAddress;
 
     @ApiModelProperty(value = "Номер телефона обратной стороны", required = true)
-    private String phone;
+    private String orderPhone;
 
     @ApiModelProperty(value = "Номер отдающего")
-    private String outPhone;
+    private String contactPhone;
 
     @ApiModelProperty(value = "Примечание", required = true)
     private String note;

@@ -46,7 +46,7 @@ public class UserInMemory implements UserRepository {
                     return user;
             }
         }
-        throw new NotFoundException("No user with the phone number");
+        throw new NotFoundException("No user with the orderPhone number");
     }
 
     @Override
@@ -60,7 +60,7 @@ public class UserInMemory implements UserRepository {
                 }
             }
         }
-        throw new NotFoundException("No user with the phone number or user is already exists");
+        throw new NotFoundException("No user with the orderPhone number or user is already exists");
     }
 
     @Override

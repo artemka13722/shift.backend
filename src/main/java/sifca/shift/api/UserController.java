@@ -39,8 +39,8 @@ public class UserController {
 
     @GetMapping(USER_PATH + "/get")
     @ApiOperation(value = "Получение информации о пользователе по номеру телефона" +
-            "/Getting all information(only name, yes) about the user having the phone number")
-    public User getOne(@RequestParam(value = "phone", required = true) String phone){
+            "/Getting all information(only name, yes) about the user having the orderPhone number")
+    public User getOne(@RequestParam(value = "orderPhone", required = true) String phone){
         if (isCorrectPhone(phone)) {
             return UserService.getOne(phone);
         }
@@ -51,7 +51,7 @@ public class UserController {
     @ApiOperation(value = "Добавление нового пользователя/Adding a new user")
     public ResponseEntity<?> create(
             @ApiParam(value = "Данные для нового пользователя (Номер телефона, имя)/" +
-                    "Some data for a new user(phone number, name")
+                    "Some data for a new user(orderPhone number, name")
             @RequestBody User user){
         if (isCorrectPhone(user.getPhone())) {
             UserService.create(user.getPhone(), user.getName());
@@ -64,10 +64,10 @@ public class UserController {
     @ApiOperation(value = "Обновление данных о пользователе/Updating data about a user")
     public ResponseEntity<?> update(
             @ApiParam(value = "Номер телефона пользователя, данные о котором нужно поменять/" +
-                    "User's phone number which data needs to change")
-            @RequestHeader("phone") String phone,
+                    "User's orderPhone number which data needs to change")
+            @RequestHeader("orderPhone") String phone,
             @ApiParam(value = "Новые данные для пользователи (Номер телефона, имя)/" +
-                    "New data for the user(phone number, name")
+                    "New data for the user(orderPhone number, name")
             @RequestBody User user) {
         if (isCorrectPhone(user.getPhone())) {
             UserService.update(phone, user.getPhone(), user.getName());
@@ -76,12 +76,12 @@ public class UserController {
         throw new NotFoundException("Phone number is incorrect");
     }
 
-    @DeleteMapping(USER_PATH + "/delete/{phone}")
+    @DeleteMapping(USER_PATH + "/delete/{orderPhone}")
     @ApiParam(value = "Удаление существующего пользователя/" +
             "Deleting existing user")
     public ResponseEntity<?> delete(
             @ApiParam(value = "Номер телефона пользователя, которого нужно удалить/" +
-                    "User's phone number which needs to delete")
+                    "User's orderPhone number which needs to delete")
             @PathVariable String phone) {
         if (isCorrectPhone(phone)) {
             UserService.delete(phone);

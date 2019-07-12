@@ -79,7 +79,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
         }
         else
             throw new NotFoundException("The order is already  exist or courier for this order is already tableExist " +
-                "or user with the phone number does not tableExist");
+                "or user with the orderPhone number does not tableExist");
     }
 
     @Override
@@ -101,7 +101,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
                     "WHERE orders.OrderId = :OrderId AND contactphone = :phone";
             MapSqlParameterSource param = new MapSqlParameterSource()
                     .addValue("OrderId", id)
-                    .addValue("phone", phone);
+                    .addValue("orderPhone", phone);
             List<Order> orders = jdbcTemplate.query(sql, param, orderExtractor);
             if (orders.isEmpty())
                 return false;
@@ -118,7 +118,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
                     "WHERE Orders.OrderId = :OrderId AND couriers.CourierPhone = :phone;";
             MapSqlParameterSource param = new MapSqlParameterSource()
                     .addValue("OrderId", id)
-                    .addValue("phone", phone);
+                    .addValue("orderPhone", phone);
             List<Order> orders = jdbcTemplate.query(sql, param, orderExtractor);
             if (orders.isEmpty())
                 return false;
@@ -160,7 +160,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
             jdbcTemplate.update(sql, param);
             orderService.changeStatus(id, "Canceled");
         } else
-            throw new NotFoundException("Order does not exist or access  error(wrong phone number) " +
+            throw new NotFoundException("Order does not exist or access  error(wrong orderPhone number) " +
                     "or the order isn't active");
     }
 
@@ -188,7 +188,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
                 "toAddress, orderPhone, contactPhone, note, 0 as access FROM Orders " +
                 "WHERE orderPhone = :phone;";
         MapSqlParameterSource param = new MapSqlParameterSource()
-                .addValue("phone",phone);
+                .addValue("orderPhone",phone);
         myOrders.addAll(jdbcTemplate.query(sql, param, myOrdersExtractor));
         // ADDING AS A COURIER
         sql = "SELECT orders.OrderId, title, couriers.status, price, size, deliveryDate, deliveryTime, fromAddress, " +
@@ -196,7 +196,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
                 "JOIN couriers ON orders.OrderId = couriers.OrderId " +
                 "WHERE couriers.courierPhone = :phone;";
         param = new MapSqlParameterSource()
-                .addValue("phone",phone);
+                .addValue("orderPhone",phone);
         myOrders.addAll(jdbcTemplate.query(sql, param, myOrdersExtractor));
         if (myOrders.isEmpty())
             throw new NotFoundException("No my orders");
@@ -222,7 +222,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
         String sql = "SELECT title, price, size, deliveryDate, deliveryTime, fromAddress, toAddress, note " +
                 "FROM Orders WHERE status = 'Active' AND orders.orderPhone <> :phone;";
         MapSqlParameterSource param = new MapSqlParameterSource()
-                .addValue("phone", phone);
+                .addValue("orderPhone", phone);
         activeOrders.addAll(jdbcTemplate.query(sql, param, activeOrdersExtractor));
         if (activeOrders.isEmpty())
             throw new NotFoundException("No active orders");
