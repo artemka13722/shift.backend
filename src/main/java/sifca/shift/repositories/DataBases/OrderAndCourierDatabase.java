@@ -102,7 +102,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
                     "WHERE orders.OrderId = :OrderId AND contactphone = :phone";
             MapSqlParameterSource param = new MapSqlParameterSource()
                     .addValue("OrderId", id)
-                    .addValue("orderPhone", phone);
+                    .addValue("phone", phone);
             List<Order> orders = jdbcTemplate.query(sql, param, orderExtractor);
             if (orders.isEmpty())
                 return false;
@@ -119,7 +119,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
                     "WHERE Orders.OrderId = :OrderId AND couriers.CourierPhone = :phone;";
             MapSqlParameterSource param = new MapSqlParameterSource()
                     .addValue("OrderId", id)
-                    .addValue("orderPhone", phone);
+                    .addValue("phone", phone);
             List<Order> orders = jdbcTemplate.query(sql, param, orderExtractor);
             if (orders.isEmpty())
                 return false;
