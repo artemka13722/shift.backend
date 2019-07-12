@@ -98,10 +98,10 @@ public class OrderController {
     @GetMapping(_PATH + "get/active-orders")
     @ApiOperation(value = "Получение всех активных заказов/" +
             "Getting all active orders")
-    public ResponseEntity<List<ActiveOrders>> getActiveOrders(
+    public ResponseEntity<List<Order>> getActiveOrders(
             @RequestHeader(value = "orderPhone", required = true) String phone) {
         if (isCorrectPhone(phone)) {
-            List<ActiveOrders> orders = orderAndCourierService.getActiveOrders(phone);
+            List<Order> orders = orderAndCourierService.getActiveOrders(phone);
             return ResponseEntity.ok(orders);
         }
         throw new NotFoundException("Phone number is incorrect or access error");

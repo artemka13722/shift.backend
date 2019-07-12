@@ -3,8 +3,8 @@ package sifca.shift.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sifca.shift.models.Courier;
-import sifca.shift.models.ActiveOrders;
 import sifca.shift.models.MyOrders;
+import sifca.shift.models.Order;
 import sifca.shift.repositories.OrderAndCourierRepository;
 
 import java.util.List;
@@ -59,7 +59,7 @@ public class OrderAndCourierService {
         return orderAndCourierRepository.getPhone(Id);
     }
 
-    public List<ActiveOrders> getActiveOrders(String phone){
+    public List<Order> getActiveOrders(String phone){
         return orderAndCourierRepository.getActiveOrders(phone);
     }
 

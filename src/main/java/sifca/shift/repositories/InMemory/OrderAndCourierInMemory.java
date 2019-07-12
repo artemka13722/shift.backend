@@ -1,8 +1,6 @@
 package sifca.shift.repositories.InMemory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import sifca.shift.exception.NotFoundException;
-import sifca.shift.models.ActiveOrders;
 import sifca.shift.models.Courier;
 import sifca.shift.models.MyOrders;
 import sifca.shift.models.Order;
@@ -27,7 +25,7 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
     @Autowired
     UserService userService;
 
-    List<ActiveOrders> orders = new ArrayList<>();
+    List<Order> orders = new ArrayList<>();
 
     @Autowired
     public OrderAndCourierInMemory(){
@@ -185,14 +183,14 @@ public class OrderAndCourierInMemory implements OrderAndCourierRepository {
     }
 
     @Override
-    public List<ActiveOrders> getActiveOrders(String phone){
+    public List<Order> getActiveOrders(String phone){
         Integer count = -1;
         for (Integer index = 0; orderService.exists(index); ++index){
             Order order = orderService.getOrder(index);
             if (order.getStatus().equals("Active") && !order.getOrderPhone().equals(phone)){
-                orders.add(++count, new ActiveOrders(order.getTitle(), order.getPrice(), order.getSize(),
-                        order.getDeliveryDate(), order.getDeliveryTime(), order.getFromAddress(),
-                        order.getToAddress(), order.getNote()));
+                orders.add(++count, new Order(count, order.getTitle(), order.getOrderPhone(), order.getFromAddress(),
+                        order.getToAddress(), order.getContactPhone(), order.getPrice(), order.getDeliveryDate(),
+                        order.getDeliveryTime(), order.getStatus(), order.getNote(), order.getSize()));
             }
         }
         if (count == -1)

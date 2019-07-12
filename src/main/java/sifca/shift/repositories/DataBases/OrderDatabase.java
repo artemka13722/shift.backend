@@ -34,7 +34,7 @@ public class OrderDatabase implements OrderRepository {
     public void initialize(){
         String createOrderTable = "CREATE TABLE IF NOT EXISTS orders ("+
                 "OrderId int default OrderId_GENERATOR.nextval," +
-                "Title nvarchar(20) NOT NULL," +
+                "Title nvarchar(120) NOT NULL," +
                 "orderPhone varchar(11) NOT NULL," +
                 "fromAddress nvarchar(150) NOT NULL," +
                 "toAddress nvarchar(150) NOT NULL," +

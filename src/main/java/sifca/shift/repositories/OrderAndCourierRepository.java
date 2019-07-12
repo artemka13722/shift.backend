@@ -1,8 +1,8 @@
 package sifca.shift.repositories;
 
 import sifca.shift.models.Courier;
-import sifca.shift.models.ActiveOrders;
 import sifca.shift.models.MyOrders;
+import sifca.shift.models.Order;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public interface OrderAndCourierRepository {
 
     String getPhone(Integer Id);
 
-    List<ActiveOrders> getActiveOrders(String phone);
+    List<Order> getActiveOrders(String phone);
 
     List<Courier> getAll();
 

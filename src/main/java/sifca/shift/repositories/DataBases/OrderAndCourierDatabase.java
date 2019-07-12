@@ -8,9 +8,7 @@ import org.springframework.stereotype.Repository;
 import sifca.shift.exception.NotFoundException;
 import sifca.shift.models.Courier;
 import sifca.shift.models.Order;
-import sifca.shift.models.ActiveOrders;
 import sifca.shift.models.MyOrders;
-import sifca.shift.repositories.Extractors.ActiveOrdersExtractor;
 import sifca.shift.repositories.Extractors.CourierExtractor;
 import sifca.shift.repositories.Extractors.MyOrdersExtractor;
 import sifca.shift.repositories.Extractors.OrderExtractor;
@@ -42,9 +40,6 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
 
     @Autowired
     private MyOrdersExtractor myOrdersExtractor;
-
-    @Autowired
-    private ActiveOrdersExtractor activeOrdersExtractor;
 
     @PostConstruct
     public void initialize() {
@@ -99,7 +94,7 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     public boolean isCustomer(Integer id, String phone){
         if (orderService.exists(id)){
             String sql = "SELECT * FROM orders " +
-                    "WHERE orders.OrderId = :OrderId AND contactphone = :phone";
+                    "WHERE orders.OrderId = :OrderId AND orderphone = :phone";
             MapSqlParameterSource param = new MapSqlParameterSource()
                     .addValue("OrderId", id)
                     .addValue("phone", phone);
@@ -240,13 +235,13 @@ public class OrderAndCourierDatabase implements OrderAndCourierRepository {
     }
 
     @Override
-    public List<ActiveOrders> getActiveOrders(String phone){
-        List<ActiveOrders> activeOrders = new ArrayList<>();
+    public List<Order> getActiveOrders(String phone){
+        List<Order> activeOrders = new ArrayList<>();
         String sql = "SELECT title, price, size, deliveryDate, deliveryTime, fromAddress, toAddress, note " +
                 "FROM Orders WHERE status = 'Active' AND orders.orderPhone <> :phone;";
         MapSqlParameterSource param = new MapSqlParameterSource()
                 .addValue("phone", phone);
-        activeOrders.addAll(jdbcTemplate.query(sql, param, activeOrdersExtractor));
+        activeOrders.addAll(jdbcTemplate.query(sql, param, orderExtractor));
         if (activeOrders.isEmpty())
             throw new NotFoundException("No active orders");
         return activeOrders;
